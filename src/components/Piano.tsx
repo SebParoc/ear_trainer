@@ -47,7 +47,7 @@ const Piano: React.FC<PianoProps> = ({
     }, [highlightNotes]); // keys is stable enough
 
     return (
-        <div className="relative w-full h-80 md:h-96 select-none perspective-1000">
+        <div className="relative w-full h-60 md:h-96 select-none perspective-1000">
             <div
                 ref={scrollContainerRef}
                 className="flex h-full w-full rounded-2xl overflow-x-auto overflow-y-hidden shadow-[0_25px_80px_-20px_rgba(0,0,0,0.8)] ring-2 ring-cool-steel/20 bg-gradient-to-b from-ink-black to-charcoal-blue scrollbar-hide"
