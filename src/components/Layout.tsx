@@ -51,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({
                     </div>
                     <div>
                         <h1 className="font-bold text-2xl tracking-tight leading-none text-soft-blush drop-shadow-md hidden md:block">AFM Ear Trainer</h1>
-                        <h1 className={`font-bold tracking-tight leading-none text-soft-blush drop-shadow-md md:hidden transition-all duration-300 ${pianoMode ? 'text-lg' : 'text-xl'}`}>AFM</h1>
+                        <h1 className={`font-bold tracking-tight leading-none text-soft-blush drop-shadow-md md:hidden transition-all duration-300 ${pianoMode ? 'text-lg' : 'text-xl'}`}>AFM Ear Trainer</h1>
                     </div>
                 </div>
 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { NOTES, getNoteName, type Note } from '../core/theory';
 import { playNote } from '../core/audio';
 
@@ -19,6 +19,7 @@ const Piano: React.FC<PianoProps> = ({
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastStartNoteRef = useRef<string | null>(null);
     const lastScrollAlignmentRef = useRef<'left' | 'right' | null>(null);
+    const [visibleLabels, setVisibleLabels] = useState<Set<string>>(new Set());
 
     // Generate keys for 3 octaves (C3 to B5)
     const octaves = [3, 4, 5];
@@ -83,6 +84,28 @@ const Piano: React.FC<PianoProps> = ({
         }
     }, [highlightNotes, scrollAlignment]); // keys is stable enough
 
+    const handleNoteClick = (note: Note) => {
+        playNote(note);
+        onNoteClick?.(note);
+
+        // Show label temporarily
+        const noteId = `${note.name}-${note.octave}`;
+        setVisibleLabels(prev => {
+            const newSet = new Set(prev);
+            newSet.add(noteId);
+            return newSet;
+        });
+
+        // Hide after 1 second
+        setTimeout(() => {
+            setVisibleLabels(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(noteId);
+                return newSet;
+            });
+        }, 1000);
+    };
+
     return (
         <div className="relative w-full h-full select-none perspective-1000">
             <div
@@ -93,10 +116,15 @@ const Piano: React.FC<PianoProps> = ({
                     if (key.isBlack) return null; // Rendered separately
 
                     const isHighlighted = highlightNotes.some(n => n.name === key.name && n.octave === key.note.octave);
+                    const noteId = `${key.name}-${key.note.octave}`;
+                    const isLabelVisible = isHighlighted || visibleLabels.has(noteId);
 
                     // Check for black key to the right
                     const nextKey = keys[index + 1];
                     const hasBlackKey = nextKey?.isBlack;
+                    const nextKeyId = nextKey ? `${nextKey.name}-${nextKey.note.octave}` : '';
+                    const isNextKeyLabelVisible = nextKey && (highlightNotes.some(n => n.name === nextKey.name && n.octave === nextKey.note.octave) || visibleLabels.has(nextKeyId));
+
 
                     return (
                         <div key={`${key.name}-${key.note.octave}`} className="relative flex-shrink-0 w-24 h-full">
@@ -110,14 +138,11 @@ const Piano: React.FC<PianoProps> = ({
                   hover:from-white hover:to-soft-blush group
                   ${isHighlighted ? '!bg-gradient-to-b !from-celadon/60 !via-celadon !to-celadon/80 shadow-[0_0_30px_rgba(156,222,159,0.8),inset_0_-4px_12px_rgba(156,222,159,0.3)] z-10' : ''}
                 `}
-                                onClick={() => {
-                                    playNote(key.note);
-                                    onNoteClick?.(key.note);
-                                }}
+                                onClick={() => handleNoteClick(key.note)}
                             >
                                 <span className={`
                   absolute bottom-6 left-1/2 -translate-x-1/2 text-base font-bold transition-all duration-200
-                  ${isHighlighted ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-charcoal-blue'}
+                  ${isLabelVisible ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-charcoal-blue'}
                 `}>
                                     {getNoteName(key.name, language)}
                                     <span className="text-[10px] align-top opacity-60 ml-0.5">{key.note.octave}</span>
@@ -139,8 +164,7 @@ const Piano: React.FC<PianoProps> = ({
                     `}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            playNote(nextKey.note);
-                                            onNoteClick?.(nextKey.note);
+                                            handleNoteClick(nextKey.note);
                                         }}
                                     >
                                         {/* Top highlight on black key */}
@@ -149,7 +173,7 @@ const Piano: React.FC<PianoProps> = ({
                                         {/* Note Label */}
                                         <span className={`
                                             absolute bottom-4 left-1/2 -translate-x-1/2 text-sm font-bold transition-all duration-200 text-white
-                                            ${highlightNotes.some(n => n.name === nextKey.name && n.octave === nextKey.note.octave) ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover:opacity-100'}
+                                            ${isNextKeyLabelVisible ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover:opacity-100'}
                                         `}>
                                             {getNoteName(nextKey.name, language)}
                                             <span className="text-[10px] align-top opacity-60 ml-0.5">{nextKey.note.octave}</span>

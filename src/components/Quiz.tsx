@@ -191,7 +191,7 @@ const Quiz: React.FC<QuizProps> = ({
             const endNote = getIntervalNote(currentStartNote, semitones);
             playNote(endNote);
         }
-        setTimeout(() => generateQuestion(), 1500);
+        setTimeout(() => generateQuestion(), 1000);
     };
 
     const handleError = (intervalSemitones?: number) => {
