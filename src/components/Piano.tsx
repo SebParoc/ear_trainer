@@ -34,10 +34,9 @@ const Piano: React.FC<PianoProps> = ({
             const index = keys.findIndex(k => k.name === firstHighlight.name && k.note.octave === firstHighlight.octave);
 
             if (index !== -1) {
-                // Key width is now w-24 (6rem = 96px)
-                // Scroll to center the key: (index * 96) - (containerWidth / 2) + (keyWidth / 2)
-                const keyWidth = 96;
-                const scrollAmount = index * keyWidth;
+                // Calculate index of this key among WHITE keys only
+                const whiteKeyIndex = keys.slice(0, index).filter(k => !k.isBlack).length;
+                const scrollAmount = whiteKeyIndex * keyWidth;
                 scrollContainerRef.current.scrollTo({
                     left: scrollAmount,
                     behavior: 'smooth'
