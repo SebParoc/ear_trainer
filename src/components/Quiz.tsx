@@ -324,6 +324,7 @@ const Quiz: React.FC<QuizProps> = ({
                         </div>
                     )}
                 </div>
+            )}
         </div>
     );
 };

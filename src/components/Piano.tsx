@@ -66,11 +66,11 @@ const Piano: React.FC<PianoProps> = ({
                             {/* White Key */}
                             <button
                                 className={`
-                  w-full h-full bg-gradient-to-b from-soft-blush via-dust-grey to-rosy-granite/30
+                  w-full h-full bg-gradient-to-b from-white via-soft-blush to-dust-grey
                   border-r border-slate-grey/20 rounded-b-lg active:from-dust-grey active:to-rosy-granite/50
                   transition-all duration-150 ease-out transform origin-top
                   active:scale-y-[0.97] active:shadow-[inset_0_4px_12px_rgba(0,0,0,0.2)]
-                  hover:from-white hover:to-dust-grey
+                  hover:from-white hover:to-soft-blush
                   ${isHighlighted ? '!bg-gradient-to-b !from-celadon/60 !via-celadon !to-celadon/80 shadow-[0_0_30px_rgba(156,222,159,0.8),inset_0_-4px_12px_rgba(156,222,159,0.3)] z-10' : ''}
                 `}
                                 onClick={() => {
