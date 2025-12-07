@@ -8,22 +8,25 @@ interface PianoProps {
     onNoteClick?: (note: Note) => void;
     language: 'anglo' | 'italian';
     scrollAlignment?: 'left' | 'right';
+    visibleOctaves?: number[];
 }
 
 const Piano: React.FC<PianoProps> = ({
     highlightNotes = [],
     onNoteClick,
     language,
-    scrollAlignment = 'left'
+    scrollAlignment = 'left',
+    visibleOctaves = [3, 4, 5]
 }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastStartNoteRef = useRef<string | null>(null);
     const lastScrollAlignmentRef = useRef<'left' | 'right' | null>(null);
     const [visibleLabels, setVisibleLabels] = useState<Set<string>>(new Set());
 
-    // Generate keys for 3 octaves (C3 to B5)
-    const octaves = [3, 4, 5];
-    const keys = octaves.flatMap(octave =>
+    // Generate keys based on visibleOctaves
+    // Sort octaves to ensure correct order
+    const sortedOctaves = [...visibleOctaves].sort((a, b) => a - b);
+    const keys = sortedOctaves.flatMap(octave =>
         NOTES.map(noteName => ({
             name: noteName,
             isBlack: noteName.includes('#'),

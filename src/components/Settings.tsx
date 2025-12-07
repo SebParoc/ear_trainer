@@ -15,6 +15,8 @@ interface SettingsProps {
     setSelectedStartNote: (note: NoteName | 'Random') => void;
     intervalDirection: 'Ascending' | 'Descending' | 'Both';
     setIntervalDirection: (dir: 'Ascending' | 'Descending' | 'Both') => void;
+    selectedOctaves: number[];
+    setSelectedOctaves: (octaves: number[]) => void;
     onClose: () => void;
 }
 
@@ -29,13 +31,27 @@ const Settings: React.FC<SettingsProps> = ({
     setSelectedStartNote,
     intervalDirection,
     setIntervalDirection,
+    selectedOctaves,
+    setSelectedOctaves,
     onClose
 }) => {
     const toggleInterval = (semitones: number) => {
         if (selectedIntervals.includes(semitones)) {
-            setSelectedIntervals(selectedIntervals.filter(i => i !== semitones));
+            if (selectedIntervals.length > 1) {
+                setSelectedIntervals(selectedIntervals.filter(i => i !== semitones));
+            }
         } else {
             setSelectedIntervals([...selectedIntervals, semitones]);
+        }
+    };
+
+    const toggleOctave = (octave: number) => {
+        if (selectedOctaves.includes(octave)) {
+            if (selectedOctaves.length > 1) {
+                setSelectedOctaves(selectedOctaves.filter(o => o !== octave).sort((a, b) => a - b));
+            }
+        } else {
+            setSelectedOctaves([...selectedOctaves, octave].sort((a, b) => a - b));
         }
     };
 
@@ -153,6 +169,36 @@ const Settings: React.FC<SettingsProps> = ({
                             {note === 'Random' ? 'Random' : getNoteName(note, language)}
                         </button>
                     ))}
+                </div>
+            </div>
+
+            {/* Octave Selection Card */}
+            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 rounded-xl bg-soft-blush/20">
+                        <Music className="w-5 h-5 text-soft-blush" />
+                    </div>
+                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Ottave Attive</h3>
+                </div>
+
+                <div className="flex gap-3 justify-center">
+                    {[2, 3, 4, 5].map((octave) => {
+                        const isSelected = selectedOctaves.includes(octave);
+                        return (
+                            <button
+                                key={octave}
+                                onClick={() => toggleOctave(octave)}
+                                className={`
+                                    w-16 h-16 rounded-2xl font-bold text-xl transition-all duration-200 flex items-center justify-center
+                                    ${isSelected
+                                        ? 'bg-celadon text-charcoal-blue shadow-lg scale-105'
+                                        : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
+                                `}
+                            >
+                                {octave}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 

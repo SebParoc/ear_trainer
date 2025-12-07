@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Check, X, Volume2, Music2 } from 'lucide-react';
-import { getRandomNote, getIntervalNote, type Note, type Interval, type NoteName, INTERVALS, NOTES } from '../core/theory';
+import { getIntervalNote, type Note, type Interval, type NoteName, INTERVALS, NOTES } from '../core/theory';
 import { playNote, playInterval, playDuckSound } from '../core/audio';
 import Piano from './Piano';
 
@@ -11,6 +11,7 @@ interface QuizProps {
     highlightFirstNote: boolean;
     selectedStartNote: NoteName | 'Random';
     intervalDirection: 'Ascending' | 'Descending' | 'Both';
+    selectedOctaves: number[];
     setHeaderCenter: (node: React.ReactNode) => void;
 }
 
@@ -23,6 +24,7 @@ const Quiz: React.FC<QuizProps> = ({
     highlightFirstNote,
     selectedStartNote,
     intervalDirection,
+    selectedOctaves,
     setHeaderCenter
 }) => {
     const [currentStartNote, setCurrentStartNote] = useState<Note | null>(null);
@@ -54,16 +56,18 @@ const Quiz: React.FC<QuizProps> = ({
         // Try to generate a valid question
         while (!valid && attempts < 50) {
             if (selectedStartNote === 'Random') {
-                startNote = getRandomNote(3, 4);
+                // Pick a random octave from selectedOctaves
+                const octave = selectedOctaves[Math.floor(Math.random() * selectedOctaves.length)];
+                startNote = { name: NOTES[Math.floor(Math.random() * NOTES.length)], octave };
             } else {
-                // Randomize octave only
-                const octave = Math.random() < 0.5 ? 3 : 4;
+                // Pick a random octave from selectedOctaves
+                const octave = selectedOctaves[Math.floor(Math.random() * selectedOctaves.length)];
                 startNote = { name: selectedStartNote, octave };
             }
 
             interval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
 
-            // Check bounds (C3 to B5)
+            // Check bounds (C3 to B5) AND selected octaves
             const semitones = direction === 'Ascending' ? interval.semitones : -interval.semitones;
             const endNote = getIntervalNote(startNote, semitones);
 
@@ -71,10 +75,14 @@ const Quiz: React.FC<QuizProps> = ({
             const startValue = startNote.octave * 12 + NOTES.indexOf(startNote.name);
             const endValue = endNote.octave * 12 + NOTES.indexOf(endNote.name);
 
-            const minValue = 3 * 12 + NOTES.indexOf("C"); // C3
-            const maxValue = 5 * 12 + NOTES.indexOf("B"); // B5
+            const minValue = 2 * 12 + NOTES.indexOf("C"); // C2 (Lowest supported)
+            const maxValue = 5 * 12 + NOTES.indexOf("B"); // B5 (Highest supported)
 
-            if (startValue >= minValue && startValue <= maxValue && endValue >= minValue && endValue <= maxValue) {
+            // Check if both start and end notes are within the SELECTED octaves
+            const isStartInOctave = selectedOctaves.includes(startNote.octave);
+            const isEndInOctave = selectedOctaves.includes(endNote.octave);
+
+            if (startValue >= minValue && startValue <= maxValue && endValue >= minValue && endValue <= maxValue && isStartInOctave && isEndInOctave) {
                 valid = true;
             }
             attempts++;
@@ -251,6 +259,7 @@ const Quiz: React.FC<QuizProps> = ({
                             language={language}
                             onNoteClick={(note) => handlePianoGuess(note)}
                             scrollAlignment={currentDirection === 'Ascending' ? 'left' : 'right'}
+                            visibleOctaves={selectedOctaves}
                         />
                     </div>
 

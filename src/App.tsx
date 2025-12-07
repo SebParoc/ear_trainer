@@ -16,6 +16,7 @@ function App() {
   const [highlightFirstNote, setHighlightFirstNote] = useState(true);
   const [selectedStartNote, setSelectedStartNote] = useState<NoteName | 'Random'>('Random');
   const [intervalDirection, setIntervalDirection] = useState<'Ascending' | 'Descending' | 'Both'>('Ascending');
+  const [selectedOctaves, setSelectedOctaves] = useState<number[]>([3, 4]);
 
   const [headerCenter, setHeaderCenter] = useState<React.ReactNode>(null);
 
@@ -41,6 +42,8 @@ function App() {
             setSelectedStartNote={setSelectedStartNote}
             intervalDirection={intervalDirection}
             setIntervalDirection={setIntervalDirection}
+            selectedOctaves={selectedOctaves}
+            setSelectedOctaves={setSelectedOctaves}
             onClose={() => setShowSettings(false)}
           />
           <button
@@ -59,6 +62,7 @@ function App() {
           highlightFirstNote={highlightFirstNote}
           selectedStartNote={selectedStartNote}
           intervalDirection={intervalDirection}
+          selectedOctaves={selectedOctaves}
           setHeaderCenter={setHeaderCenter}
         />
       )}
