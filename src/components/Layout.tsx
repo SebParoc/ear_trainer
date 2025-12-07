@@ -41,17 +41,17 @@ const Layout: React.FC<LayoutProps> = ({
             </div>
 
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between bg-gradient-to-b from-charcoal-blue/50 to-transparent backdrop-blur-xl border-b border-cool-steel/20 shadow-lg">
+            <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-gradient-to-b from-charcoal-blue/50 to-transparent backdrop-blur-xl border-b border-cool-steel/20 shadow-lg transition-all duration-300 ${pianoMode ? 'px-4 py-2' : 'px-6 py-5'}`}>
                 <div className="flex items-center gap-4">
                     <div className="relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-bitter-chocolate to-cool-steel rounded-2xl blur-md opacity-70" />
-                        <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center shadow-lg border border-soft-blush/20 overflow-hidden">
+                        <div className={`relative rounded-2xl bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center shadow-lg border border-soft-blush/20 overflow-hidden transition-all duration-300 ${pianoMode ? 'w-10 h-10' : 'w-12 h-12'}`}>
                             <img src="/images/logo.png" alt="AFM Logo" className="w-full h-full object-cover" />
                         </div>
                     </div>
                     <div>
                         <h1 className="font-bold text-2xl tracking-tight leading-none text-soft-blush drop-shadow-md hidden md:block">AFM Ear Trainer</h1>
-                        <h1 className="font-bold text-xl tracking-tight leading-none text-soft-blush drop-shadow-md md:hidden">AFM</h1>
+                        <h1 className={`font-bold tracking-tight leading-none text-soft-blush drop-shadow-md md:hidden transition-all duration-300 ${pianoMode ? 'text-lg' : 'text-xl'}`}>AFM</h1>
                     </div>
                 </div>
 
@@ -62,10 +62,10 @@ const Layout: React.FC<LayoutProps> = ({
 
                 <button
                     onClick={onToggleSettings}
-                    className={`relative p-3.5 rounded-xl transition-all duration-300 group overflow-hidden ${showSettings
+                    className={`relative rounded-xl transition-all duration-300 group overflow-hidden ${showSettings
                         ? 'bg-gradient-to-br from-soft-blush to-dust-grey text-charcoal-blue shadow-lg scale-110'
                         : 'bg-cool-steel/20 text-soft-blush hover:bg-cool-steel/30 border border-cool-steel/30 hover:border-cool-steel/50 hover:scale-105'
-                        }`}
+                        } ${pianoMode ? 'p-2' : 'p-3.5'}`}
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-soft-blush/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className={`transition-transform duration-300 ${showSettings ? 'rotate-0' : 'rotate-0'}`}>
@@ -75,7 +75,7 @@ const Layout: React.FC<LayoutProps> = ({
             </header>
 
             {/* Main Content */}
-            <main className="pt-28 pb-12 px-4 min-h-screen flex flex-col justify-center relative z-10">
+            <main className={`px-4 min-h-screen flex flex-col justify-center relative z-10 transition-all duration-300 ${pianoMode ? 'pt-20 pb-4' : 'pt-28 pb-12'}`}>
                 {showRotationWarning ? (
                     <div className="flex flex-col items-center justify-center text-center p-8 animate-fade-in">
                         <div className="w-20 h-20 mb-6 border-2 border-cool-steel/30 rounded-2xl flex items-center justify-center animate-spin-slow bg-charcoal-blue/50 backdrop-blur-md">
