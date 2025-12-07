@@ -102,7 +102,7 @@ const Settings: React.FC<SettingsProps> = ({
                                     : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
               `}
                         >
-                            {note === 'Random' ? 'Casuale' : note}
+                            {note === 'Random' ? 'Random' : note}
                         </button>
                     ))}
                 </div>
