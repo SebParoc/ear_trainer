@@ -17,6 +17,8 @@ const Piano: React.FC<PianoProps> = ({
     scrollAlignment = 'left'
 }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const lastStartNoteRef = useRef<string | null>(null);
+    const lastScrollAlignmentRef = useRef<'left' | 'right' | null>(null);
 
     // Generate keys for 3 octaves (C3 to B5)
     const octaves = [3, 4, 5];
@@ -28,37 +30,55 @@ const Piano: React.FC<PianoProps> = ({
         }))
     );
 
-    // Auto-scroll to the first highlighted note on change
+    // Auto-scroll logic
     useEffect(() => {
         if (highlightNotes.length > 0 && scrollContainerRef.current) {
             const firstHighlight = highlightNotes[0];
-            // Find index of this note
-            let index = keys.findIndex(k => k.name === firstHighlight.name && k.note.octave === firstHighlight.octave);
+            const startNoteKey = `${firstHighlight.name}-${firstHighlight.octave}`;
 
-            if (index !== -1) {
-                // If it's a black key, scroll to the previous white key (its parent)
-                if (keys[index].isBlack) {
-                    index = Math.max(0, index - 1);
+            // Only scroll if the start note has changed OR the alignment preference has changed
+            // This prevents "snapping back" when the user scrolls manually to play other notes
+            if (startNoteKey !== lastStartNoteRef.current || scrollAlignment !== lastScrollAlignmentRef.current) {
+
+                // Find index of this note
+                let index = keys.findIndex(k => k.name === firstHighlight.name && k.note.octave === firstHighlight.octave);
+
+                if (index !== -1) {
+                    // Smart adjustment for black keys based on alignment
+                    if (scrollAlignment === 'left') {
+                        // If aligning left and it's a black key, show the previous white key so the black key isn't cut off
+                        if (keys[index].isBlack) {
+                            index = Math.max(0, index - 1);
+                        }
+                    }
+                    // If aligning right, we DON'T decrement. 
+                    // Example: Target C# (index 1). White keys before: 1 (C). 
+                    // Align Right calc: (1 + 1) * width = Right edge of D. 
+                    // This ensures C# (between C and D) is visible.
+
+                    // Calculate index of this key among WHITE keys only
+                    const whiteKeyIndex = keys.slice(0, index).filter(k => !k.isBlack).length;
+                    const keyWidth = 96; // w-24
+
+                    let scrollAmount = 0;
+
+                    if (scrollAlignment === 'left') {
+                        scrollAmount = whiteKeyIndex * keyWidth;
+                    } else {
+                        // Align to right: (index + 1) * keyWidth - containerWidth
+                        // We add 1 because we want the RIGHT edge of the key
+                        scrollAmount = ((whiteKeyIndex + 1) * keyWidth) - scrollContainerRef.current.clientWidth;
+                    }
+
+                    scrollContainerRef.current.scrollTo({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+
+                    // Update refs
+                    lastStartNoteRef.current = startNoteKey;
+                    lastScrollAlignmentRef.current = scrollAlignment;
                 }
-
-                // Calculate index of this key among WHITE keys only
-                const whiteKeyIndex = keys.slice(0, index).filter(k => !k.isBlack).length;
-                const keyWidth = 96; // w-24
-
-                let scrollAmount = 0;
-
-                if (scrollAlignment === 'left') {
-                    scrollAmount = whiteKeyIndex * keyWidth;
-                } else {
-                    // Align to right: (index + 1) * keyWidth - containerWidth
-                    // We add 1 because we want the RIGHT edge of the key
-                    scrollAmount = ((whiteKeyIndex + 1) * keyWidth) - scrollContainerRef.current.clientWidth;
-                }
-
-                scrollContainerRef.current.scrollTo({
-                    left: scrollAmount,
-                    behavior: 'smooth'
-                });
             }
         }
     }, [highlightNotes, scrollAlignment]); // keys is stable enough
@@ -97,7 +117,7 @@ const Piano: React.FC<PianoProps> = ({
                             >
                                 <span className={`
                   absolute bottom-6 left-1/2 -translate-x-1/2 text-base font-bold transition-all duration-200
-                  ${isHighlighted ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 md:group-hover:opacity-100 md:group-hover:text-charcoal-blue'}
+                  ${isHighlighted ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-charcoal-blue'}
                 `}>
                                     {getNoteName(key.name, language)}
                                     <span className="text-[10px] align-top opacity-60 ml-0.5">{key.note.octave}</span>
@@ -129,7 +149,7 @@ const Piano: React.FC<PianoProps> = ({
                                         {/* Note Label */}
                                         <span className={`
                                             absolute bottom-4 left-1/2 -translate-x-1/2 text-sm font-bold transition-all duration-200 text-white
-                                            ${highlightNotes.some(n => n.name === nextKey.name && n.octave === nextKey.note.octave) ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}
+                                            ${highlightNotes.some(n => n.name === nextKey.name && n.octave === nextKey.note.octave) ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover:opacity-100'}
                                         `}>
                                             {getNoteName(nextKey.name, language)}
                                             <span className="text-[10px] align-top opacity-60 ml-0.5">{nextKey.note.octave}</span>
