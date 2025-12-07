@@ -56,9 +56,10 @@ export function getRandomNote(minOctave = 3, maxOctave = 5): Note {
 
 export function getIntervalNote(startNote: Note, semitones: number): Note {
     const startIndex = NOTES.indexOf(startNote.name);
-    let newIndex = startIndex + semitones;
-    let octaveChange = Math.floor(newIndex / 12);
-    newIndex = newIndex % 12;
+    const totalSemitones = startIndex + semitones;
+
+    const octaveChange = Math.floor(totalSemitones / 12);
+    const newIndex = ((totalSemitones % 12) + 12) % 12;
 
     return {
         name: NOTES[newIndex],

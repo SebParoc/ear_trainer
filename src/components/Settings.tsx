@@ -1,6 +1,6 @@
 import React from 'react';
-import { INTERVALS, NOTES, type NoteName } from '../core/theory';
-import { Check, Music, ArrowUpRight } from 'lucide-react';
+import { INTERVALS, NOTES, type NoteName, getNoteName } from '../core/theory';
+import { Check, Music, ArrowUpRight, Languages } from 'lucide-react';
 
 interface SettingsProps {
     language: 'anglo' | 'italian';
@@ -15,9 +15,12 @@ interface SettingsProps {
     setSelectedStartNote: (note: NoteName | 'Random') => void;
     intervalDirection: 'Ascending' | 'Descending' | 'Both';
     setIntervalDirection: (dir: 'Ascending' | 'Descending' | 'Both') => void;
+    onClose: () => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
+    language,
+    setLanguage,
     selectedIntervals,
     setSelectedIntervals,
     pianoMode,
@@ -25,7 +28,8 @@ const Settings: React.FC<SettingsProps> = ({
     selectedStartNote,
     setSelectedStartNote,
     intervalDirection,
-    setIntervalDirection
+    setIntervalDirection,
+    onClose
 }) => {
     const toggleInterval = (semitones: number) => {
         if (selectedIntervals.includes(semitones)) {
@@ -68,7 +72,14 @@ const Settings: React.FC<SettingsProps> = ({
                 <div className="space-y-6">
                     <div
                         className="flex items-center justify-between cursor-pointer p-4 rounded-2xl bg-ink-black/20 hover:bg-ink-black/40 transition-all duration-200 border border-cool-steel/10"
-                        onClick={() => setPianoMode(!pianoMode)}
+                        onClick={() => {
+                            const newPianoMode = !pianoMode;
+                            setPianoMode(newPianoMode);
+                            // If enabling piano mode, automatically close settings
+                            if (newPianoMode) {
+                                setTimeout(() => onClose(), 300);
+                            }
+                        }}
                     >
                         <div className="flex-1">
                             <div className="font-semibold text-lg text-soft-blush mb-1">Pianoforte Interattivo</div>
@@ -78,6 +89,43 @@ const Settings: React.FC<SettingsProps> = ({
                             <div className={`absolute top-1 left-1 w-7 h-7 bg-soft-blush rounded-full transition-all duration-300 shadow-lg ${pianoMode ? 'translate-x-7' : 'translate-x-0'}`} />
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Language Selection Card */}
+            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 rounded-xl bg-soft-blush/20">
+                        <Languages className="w-5 h-5 text-soft-blush" />
+                    </div>
+                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Sistema di Notazione</h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <button
+                        onClick={() => setLanguage('anglo')}
+                        className={`
+                            py-4 rounded-xl font-medium text-base transition-all duration-200
+                            ${language === 'anglo'
+                                ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
+                                : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
+                        `}
+                    >
+                        <div className="font-bold mb-1">Anglo-Americano</div>
+                        <div className="text-xs opacity-70">C, D, E, F, G, A, B</div>
+                    </button>
+                    <button
+                        onClick={() => setLanguage('italian')}
+                        className={`
+                            py-4 rounded-xl font-medium text-base transition-all duration-200
+                            ${language === 'italian'
+                                ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
+                                : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
+                        `}
+                    >
+                        <div className="font-bold mb-1">Italiano</div>
+                        <div className="text-xs opacity-70">Do, Re, Mi, Fa, Sol, La, Si</div>
+                    </button>
                 </div>
             </div>
 
@@ -102,7 +150,7 @@ const Settings: React.FC<SettingsProps> = ({
                                     : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
               `}
                         >
-                            {note === 'Random' ? 'Random' : note}
+                            {note === 'Random' ? 'Random' : getNoteName(note, language)}
                         </button>
                     ))}
                 </div>
@@ -171,7 +219,7 @@ const Settings: React.FC<SettingsProps> = ({
                                 <div className="absolute inset-0 bg-gradient-to-r from-soft-blush/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                 <span className={`font-semibold text-base relative z-10 transition-all ${isSelected ? 'text-soft-blush' : 'text-slate-grey group-hover:text-soft-blush/80'}`}>
-                                    {interval.name.italian}
+                                    {interval.name[language]}
                                 </span>
                                 <div className={`
                   relative z-10 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200

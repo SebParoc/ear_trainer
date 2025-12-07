@@ -41,6 +41,7 @@ function App() {
             setSelectedStartNote={setSelectedStartNote}
             intervalDirection={intervalDirection}
             setIntervalDirection={setIntervalDirection}
+            onClose={() => setShowSettings(false)}
           />
           <button
             onClick={() => setShowSettings(false)}
