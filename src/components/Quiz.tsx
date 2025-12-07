@@ -330,18 +330,7 @@ const Quiz: React.FC<QuizProps> = ({
 
                     {/* Answer Grid */}
                     <div className="grid grid-cols-2 gap-3">
-                        {INTERVALS.filter(i => selectedIntervals.includes(i.semitones)).map((interval, idx) => {
-                            const buttonStyles = [
-                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                { bg: 'slate-grey', hover: 'slate-grey/80' },
-                            ];
-                            const style = buttonStyles[idx % buttonStyles.length];
+                        {INTERVALS.filter(i => selectedIntervals.includes(i.semitones)).map((interval) => {
                             const isCorrect = gameState === 'success' && currentInterval?.semitones === interval.semitones;
                             const isWrong = wrongButton === interval.semitones;
 
@@ -357,7 +346,7 @@ const Quiz: React.FC<QuizProps> = ({
                                             ? 'bg-celadon shadow-[0_10px_40px_rgba(156,222,159,0.5)] border-2 border-celadon/50 scale-105'
                                             : isWrong
                                                 ? 'bg-bitter-chocolate shadow-[0_10px_40px_rgba(120,38,40,0.6)] border-2 border-bitter-chocolate scale-95 shake'
-                                                : `bg-${style.bg} hover:bg-${style.hover} shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] border-2 border-soft-blush/10 hover:border-soft-blush/30 hover:shadow-[0_10px_40px_-10px_rgba(119,160,169,0.3)] hover:scale-105 active:scale-100`}
+                                                : `bg-charcoal-blue hover:bg-charcoal-blue/80 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] border-2 border-soft-blush/10 hover:border-soft-blush/30 hover:shadow-[0_10px_40px_-10px_rgba(119,160,169,0.3)] hover:scale-105 active:scale-100`}
                     disabled:opacity-80 disabled:cursor-not-allowed
                   `}
                                 >
