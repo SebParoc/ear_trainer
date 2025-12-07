@@ -7,12 +7,14 @@ interface PianoProps {
     highlightNotes?: Note[];
     onNoteClick?: (note: Note) => void;
     language: 'anglo' | 'italian';
+    scrollAlignment?: 'left' | 'right';
 }
 
 const Piano: React.FC<PianoProps> = ({
     highlightNotes = [],
     onNoteClick,
-    language
+    language,
+    scrollAlignment = 'left'
 }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -31,19 +33,35 @@ const Piano: React.FC<PianoProps> = ({
         if (highlightNotes.length > 0 && scrollContainerRef.current) {
             const firstHighlight = highlightNotes[0];
             // Find index of this note
-            const index = keys.findIndex(k => k.name === firstHighlight.name && k.note.octave === firstHighlight.octave);
+            let index = keys.findIndex(k => k.name === firstHighlight.name && k.note.octave === firstHighlight.octave);
 
             if (index !== -1) {
+                // If it's a black key, scroll to the previous white key (its parent)
+                if (keys[index].isBlack) {
+                    index = Math.max(0, index - 1);
+                }
+
                 // Calculate index of this key among WHITE keys only
                 const whiteKeyIndex = keys.slice(0, index).filter(k => !k.isBlack).length;
-                const scrollAmount = whiteKeyIndex * keyWidth;
+                const keyWidth = 96; // w-24
+
+                let scrollAmount = 0;
+
+                if (scrollAlignment === 'left') {
+                    scrollAmount = whiteKeyIndex * keyWidth;
+                } else {
+                    // Align to right: (index + 1) * keyWidth - containerWidth
+                    // We add 1 because we want the RIGHT edge of the key
+                    scrollAmount = ((whiteKeyIndex + 1) * keyWidth) - scrollContainerRef.current.clientWidth;
+                }
+
                 scrollContainerRef.current.scrollTo({
                     left: scrollAmount,
                     behavior: 'smooth'
                 });
             }
         }
-    }, [highlightNotes]); // keys is stable enough
+    }, [highlightNotes, scrollAlignment]); // keys is stable enough
 
     return (
         <div className="relative w-full h-full select-none perspective-1000">

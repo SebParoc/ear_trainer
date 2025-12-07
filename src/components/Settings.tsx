@@ -1,6 +1,6 @@
 import React from 'react';
 import { INTERVALS, NOTES, getNoteName, type NoteName } from '../core/theory';
-import { Check, Music } from 'lucide-react';
+import { Music2, Check, Globe, Piano as PianoIcon, Eye, Music, ArrowUpRight } from 'lucide-react';
 
 interface SettingsProps {
     language: 'anglo' | 'italian';
@@ -13,16 +13,23 @@ interface SettingsProps {
     setHighlightFirstNote: (enabled: boolean) => void;
     selectedStartNote: NoteName | 'Random';
     setSelectedStartNote: (note: NoteName | 'Random') => void;
+    intervalDirection: 'Ascending' | 'Descending' | 'Both';
+    setIntervalDirection: (dir: 'Ascending' | 'Descending' | 'Both') => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
+    language,
+    setLanguage,
     selectedIntervals,
     setSelectedIntervals,
     pianoMode,
     setPianoMode,
+    highlightFirstNote,
+    setHighlightFirstNote,
     selectedStartNote,
     setSelectedStartNote,
-    language
+    intervalDirection,
+    setIntervalDirection
 }) => {
     const toggleInterval = (semitones: number) => {
         if (selectedIntervals.includes(semitones)) {
@@ -87,35 +94,49 @@ const Settings: React.FC<SettingsProps> = ({
                     <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Nota di Partenza</h3>
                 </div>
 
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                    <button
-                        onClick={() => setSelectedStartNote('Random')}
-                        className={`
-                            col-span-4 sm:col-span-1 p-3 rounded-xl font-bold text-sm transition-all duration-200 border
-                            ${selectedStartNote === 'Random'
-                                ? 'bg-gradient-to-r from-cool-steel/30 to-bitter-chocolate/20 border-cool-steel/50 text-soft-blush shadow-[0_0_15px_rgba(119,160,169,0.3)]'
-                                : 'bg-ink-black/20 border-rosy-granite/20 text-slate-grey hover:bg-ink-black/40 hover:text-soft-blush'}
-                        `}
-                    >
-                        Random
-                    </button>
-                    {NOTES.map(note => (
+                <div className="grid grid-cols-3 gap-2">
+                    {(['Random', ...NOTES] as const).map((note) => (
                         <button
                             key={note}
                             onClick={() => setSelectedStartNote(note)}
                             className={`
-                                p-3 rounded-xl font-bold text-sm transition-all duration-200 border
-                                ${selectedStartNote === note
-                                    ? 'bg-gradient-to-r from-cool-steel/30 to-bitter-chocolate/20 border-cool-steel/50 text-soft-blush shadow-[0_0_15px_rgba(119,160,169,0.3)]'
-                                    : 'bg-ink-black/20 border-rosy-granite/20 text-slate-grey hover:bg-ink-black/40 hover:text-soft-blush'}
-                            `}
+                py-2 rounded-xl font-medium text-sm transition-all duration-200
+                ${selectedStartNote === note
+                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
+                                    : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
+              `}
                         >
-                            {getNoteName(note, language)}
+                            {note === 'Random' ? 'Casuale' : note}
                         </button>
                     ))}
                 </div>
             </div>
 
+            {/* Interval Direction */}
+            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 rounded-xl bg-celadon/20">
+                        <ArrowUpRight className="w-5 h-5 text-celadon" />
+                    </div>
+                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Direzione Intervalli</h3>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                    {(['Ascending', 'Descending', 'Both'] as const).map((dir) => (
+                        <button
+                            key={dir}
+                            onClick={() => setIntervalDirection(dir)}
+                            className={`
+                py-2 rounded-xl font-medium text-sm transition-all duration-200
+                ${intervalDirection === dir
+                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
+                                    : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
+              `}
+                        >
+                            {dir === 'Ascending' ? 'Ascendenti' : dir === 'Descending' ? 'Discendenti' : 'Entrambi'}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             {/* Intervals Card */}
             <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">

@@ -15,6 +15,7 @@ function App() {
   const [pianoMode, setPianoMode] = useState(false);
   const [highlightFirstNote, setHighlightFirstNote] = useState(true);
   const [selectedStartNote, setSelectedStartNote] = useState<NoteName | 'Random'>('Random');
+  const [intervalDirection, setIntervalDirection] = useState<'Ascending' | 'Descending' | 'Both'>('Ascending');
 
   const [headerCenter, setHeaderCenter] = useState<React.ReactNode>(null);
 
@@ -38,6 +39,8 @@ function App() {
             setHighlightFirstNote={setHighlightFirstNote}
             selectedStartNote={selectedStartNote}
             setSelectedStartNote={setSelectedStartNote}
+            intervalDirection={intervalDirection}
+            setIntervalDirection={setIntervalDirection}
           />
           <button
             onClick={() => setShowSettings(false)}
@@ -54,6 +57,7 @@ function App() {
           pianoMode={pianoMode}
           highlightFirstNote={highlightFirstNote}
           selectedStartNote={selectedStartNote}
+          intervalDirection={intervalDirection}
           setHeaderCenter={setHeaderCenter}
         />
       )}
