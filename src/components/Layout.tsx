@@ -28,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({
         return () => window.removeEventListener('resize', checkOrientation);
     }, []);
 
-    const showRotationWarning = pianoMode && !isLandscape;
+    const showRotationWarning = pianoMode && !isLandscape && !showSettings;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-ink-black via-charcoal-blue to-ink-black text-soft-blush font-sans selection:bg-cool-steel/30 overflow-x-hidden">
