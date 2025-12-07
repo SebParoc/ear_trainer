@@ -16,11 +16,14 @@ function App() {
   const [highlightFirstNote, setHighlightFirstNote] = useState(true);
   const [selectedStartNote, setSelectedStartNote] = useState<NoteName | 'Random'>('Random');
 
+  const [headerCenter, setHeaderCenter] = useState<React.ReactNode>(null);
+
   return (
     <Layout
       showSettings={showSettings}
       onToggleSettings={() => setShowSettings(!showSettings)}
       pianoMode={pianoMode}
+      headerCenter={headerCenter}
     >
       {showSettings ? (
         <div className="w-full max-w-4xl mx-auto">
@@ -51,6 +54,7 @@ function App() {
           pianoMode={pianoMode}
           highlightFirstNote={highlightFirstNote}
           selectedStartNote={selectedStartNote}
+          setHeaderCenter={setHeaderCenter}
         />
       )}
     </Layout>

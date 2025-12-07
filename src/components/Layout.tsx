@@ -6,13 +6,15 @@ interface LayoutProps {
     showSettings: boolean;
     onToggleSettings: () => void;
     pianoMode: boolean;
+    headerCenter?: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({
     children,
     showSettings,
     onToggleSettings,
-    pianoMode
+    pianoMode,
+    headerCenter
 }) => {
     const [isLandscape, setIsLandscape] = useState(false);
 
@@ -48,8 +50,16 @@ const Layout: React.FC<LayoutProps> = ({
                         </div>
                     </div>
                     <div>
-                        <h1 className="font-bold text-2xl tracking-tight leading-none text-soft-blush drop-shadow-md">AFM Ear Trainer</h1>
-                    </div>          </div>
+                        <h1 className="font-bold text-2xl tracking-tight leading-none text-soft-blush drop-shadow-md hidden md:block">AFM Ear Trainer</h1>
+                        <h1 className="font-bold text-xl tracking-tight leading-none text-soft-blush drop-shadow-md md:hidden">AFM</h1>
+                    </div>
+                </div>
+
+                {/* Center Content (Play Button Portal) */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                    {headerCenter}
+                </div>
+
                 <button
                     onClick={onToggleSettings}
                     className={`relative p-3.5 rounded-xl transition-all duration-300 group overflow-hidden ${showSettings

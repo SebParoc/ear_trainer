@@ -10,6 +10,7 @@ interface QuizProps {
     pianoMode: boolean;
     highlightFirstNote: boolean;
     selectedStartNote: NoteName | 'Random';
+    setHeaderCenter: (node: React.ReactNode) => void;
 }
 
 type GameState = 'waiting' | 'playing' | 'success' | 'error';
@@ -19,7 +20,8 @@ const Quiz: React.FC<QuizProps> = ({
     selectedIntervals,
     pianoMode,
     highlightFirstNote,
-    selectedStartNote
+    selectedStartNote,
+    setHeaderCenter
 }) => {
     const [currentStartNote, setCurrentStartNote] = useState<Note | null>(null);
     const [currentInterval, setCurrentInterval] = useState<Interval | null>(null);
@@ -95,6 +97,37 @@ const Quiz: React.FC<QuizProps> = ({
             playSequence(currentStartNote, currentInterval);
         }
     };
+
+    // Header Portal Effect
+    useEffect(() => {
+        if (pianoMode) {
+            setHeaderCenter(
+                <button
+                    onClick={handlePlay}
+                    disabled={isPlaying}
+                    className={`
+                        relative rounded-full bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center
+                        shadow-lg border-2 border-white/30 hover:border-white/50
+                        active:scale-95 transition-all duration-300 group overflow-hidden transform-gpu
+                        w-10 h-10
+                        ${isPlaying ? 'opacity-80 cursor-wait' : ''}
+                    `}
+                >
+                    {/* Animated ring */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-soft-blush/20 to-transparent group-hover:animate-spin-slow" />
+
+                    {isPlaying ? (
+                        <Volume2 className="w-5 h-5 text-soft-blush animate-pulse relative z-10" />
+                    ) : (
+                        <Play className="w-5 h-5 ml-0.5 text-soft-blush fill-soft-blush relative z-10" />
+                    )}
+                </button>
+            );
+        } else {
+            setHeaderCenter(null);
+        }
+        return () => setHeaderCenter(null);
+    }, [pianoMode, isPlaying, handlePlay, setHeaderCenter]);
 
     const handleGuess = (interval: Interval) => {
         if (!currentInterval || !currentStartNote || isPlaying || gameState !== 'waiting') return;
@@ -177,65 +210,11 @@ const Quiz: React.FC<QuizProps> = ({
     }
 
     return (
-        <div className={`w-full mx-auto flex flex-col items-center pb-8 px-4 ${pianoMode ? 'max-w-full' : 'max-w-5xl'}`}>
-            {/* Play Button Area - MOVED UP FOR PIANO MODE */}
-            <div className={`flex flex-col items-center ${pianoMode ? 'mb-2 order-first' : 'mb-12'}`}>
-                <div className="relative">
-                    {/* Glow effect */}
-                    <div className={`absolute inset-0 bg-gradient-to-r from-cool-steel/40 via-celadon/30 to-cool-steel/40 blur-3xl rounded-full animate-pulse ${pianoMode ? 'scale-90 opacity-50' : 'scale-150'}`} />
-
-                    <button
-                        onClick={handlePlay}
-                        disabled={isPlaying}
-                        className={`
-                                relative rounded-full bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center
-                                shadow-[0_20px_60px_-10px_rgba(120,38,40,0.8)] border-4 border-white/30 hover:border-white/50
-                                active:scale-95 transition-all duration-300 group overflow-hidden transform-gpu
-                                ${pianoMode ? 'w-16 h-16' : 'w-36 h-36'}
-                                ${isPlaying ? 'opacity-80 cursor-wait' : ''}
-                            `}
-                    >
-                        {/* Animated ring */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-soft-blush/20 to-transparent group-hover:animate-spin-slow" />
-
-                        {/* Inner glow */}
-                        <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cool-steel/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                        {isPlaying ? (
-                            <Volume2 className={`${pianoMode ? 'w-6 h-6' : 'w-16 h-16'} text-soft-blush animate-pulse relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]`} />
-                        ) : (
-                            <Play className={`${pianoMode ? 'w-6 h-6 ml-0.5' : 'w-16 h-16 ml-2'} text-soft-blush fill-soft-blush relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]`} />
-                        )}
-                    </button>
-
-                    {/* Quiz Mode Feedback Overlay (Centered on Play Button) */}
-                    {!pianoMode && (
-                        <div className={`absolute inset-0 flex justify-center items-center pointer-events-none transition-all duration-300 z-50 ${gameState === 'success' || gameState === 'error' ? 'opacity-100' : 'opacity-0'
-                            }`}>
-                            {gameState === 'success' && (
-                                <img src="/images/corretto.png" alt="Corretto" className="h-52 w-auto max-w-none drop-shadow-2xl animate-bounce-short" />
-                            )}
-                            {gameState === 'error' && (
-                                <img src="/images/incorretto.png" alt="Incorretto" className="h-52 w-auto max-w-none drop-shadow-2xl animate-shake" />
-                            )}
-                        </div>
-                    )}
-                </div>
-                {!pianoMode && (
-                    <div className="mt-6 flex items-center gap-2">
-                        <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-cool-steel/50" />
-                        <p className="text-center text-soft-blush/80 text-sm font-bold tracking-[0.3em] uppercase">
-                            Ascolta
-                        </p>
-                        <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-cool-steel/50" />
-                    </div>
-                )}
-            </div>
-
+        <div className={`w-full mx-auto flex flex-col items-center pb-8 px-4 ${pianoMode ? 'max-w-full h-[calc(100vh-100px)] lg:max-h-[500px] justify-center' : 'max-w-5xl'}`}>
             {/* Piano Display */}
             {pianoMode && (
-                <div className="w-full mb-2 animate-fade-in-up relative">
-                    <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 p-2 rounded-3xl backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/20">
+                <div className="w-full h-full flex flex-col justify-center relative">
+                    <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 p-2 rounded-3xl backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/20 h-full flex items-center">
                         <Piano
                             startOctave={currentStartNote?.octave || 3}
                             highlightNotes={getPianoHighlights()}
@@ -266,63 +245,112 @@ const Quiz: React.FC<QuizProps> = ({
 
             {/* Main Content Card (Only for Quiz Mode Grid) */}
             {!pianoMode && (
-                <div className={`w-full max-w-2xl bg-gradient-to-br from-charcoal-blue/40 to-ink-black/60 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/20 p-8`}>
-                    {/* Answer Grid - HIDE IN PIANO MODE */}
-                    {!pianoMode && (
-                        <div className="grid grid-cols-2 gap-4">
-                            {INTERVALS.filter(i => selectedIntervals.includes(i.semitones)).map((interval, idx) => {
-                                const buttonStyles = [
-                                    { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                    { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                    { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                    { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                    { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                    { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                    { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
-                                    { bg: 'slate-grey', hover: 'slate-grey/80' },
-                                ];
-                                const style = buttonStyles[idx % buttonStyles.length];
-                                const isCorrect = gameState === 'success' && currentInterval?.semitones === interval.semitones;
-                                const isWrong = wrongButton === interval.semitones;
+                <div className={`w-full max-w-2xl bg-gradient-to-br from-charcoal-blue/40 to-ink-black/60 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/20 p-6`}>
 
-                                return (
-                                    <button
-                                        key={interval.semitones}
-                                        onClick={() => handleGuess(interval)}
-                                        disabled={gameState === 'success'}
-                                        className={`
-                    relative h-24 rounded-2xl transition-all duration-200 
+                    {/* Play Button Area */}
+                    <div className="flex flex-col items-center mb-8">
+                        <div className="relative">
+                            {/* Glow effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-cool-steel/40 via-celadon/30 to-cool-steel/40 blur-3xl rounded-full animate-pulse scale-125" />
+
+                            <button
+                                onClick={handlePlay}
+                                disabled={isPlaying}
+                                className={`
+                                relative rounded-full bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center
+                                shadow-[0_20px_60px_-10px_rgba(120,38,40,0.8)] border-4 border-white/30 hover:border-white/50
+                                active:scale-95 transition-all duration-300 group overflow-hidden transform-gpu
+                                w-28 h-28
+                                ${isPlaying ? 'opacity-80 cursor-wait' : ''}
+                            `}
+                            >
+                                {/* Animated ring */}
+                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-soft-blush/20 to-transparent group-hover:animate-spin-slow" />
+
+                                {/* Inner glow */}
+                                <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cool-steel/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                {isPlaying ? (
+                                    <Volume2 className="w-12 h-12 text-soft-blush animate-pulse relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
+                                ) : (
+                                    <Play className="w-12 h-12 ml-1 text-soft-blush fill-soft-blush relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
+                                )}
+                            </button>
+
+                            {/* Quiz Mode Feedback Overlay (Centered on Play Button) */}
+                            <div className={`absolute inset-0 flex justify-center items-center pointer-events-none transition-all duration-300 z-50 ${gameState === 'success' || gameState === 'error' ? 'opacity-100' : 'opacity-0'
+                                }`}>
+                                {gameState === 'success' && (
+                                    <img src="/images/corretto.png" alt="Corretto" className="h-40 w-auto max-w-none drop-shadow-2xl animate-bounce-short" />
+                                )}
+                                {gameState === 'error' && (
+                                    <img src="/images/incorretto.png" alt="Incorretto" className="h-40 w-auto max-w-none drop-shadow-2xl animate-shake" />
+                                )}
+                            </div>
+                        </div>
+                        <div className="mt-4 flex items-center gap-2">
+                            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-cool-steel/50" />
+                            <p className="text-center text-soft-blush/80 text-xs font-bold tracking-[0.3em] uppercase">
+                                Ascolta
+                            </p>
+                            <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-cool-steel/50" />
+                        </div>
+                    </div>
+
+                    {/* Answer Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                        {INTERVALS.filter(i => selectedIntervals.includes(i.semitones)).map((interval, idx) => {
+                            const buttonStyles = [
+                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
+                                { bg: 'slate-grey', hover: 'slate-grey/80' },
+                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
+                                { bg: 'slate-grey', hover: 'slate-grey/80' },
+                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
+                                { bg: 'slate-grey', hover: 'slate-grey/80' },
+                                { bg: 'charcoal-blue', hover: 'charcoal-blue/80' },
+                                { bg: 'slate-grey', hover: 'slate-grey/80' },
+                            ];
+                            const style = buttonStyles[idx % buttonStyles.length];
+                            const isCorrect = gameState === 'success' && currentInterval?.semitones === interval.semitones;
+                            const isWrong = wrongButton === interval.semitones;
+
+                            return (
+                                <button
+                                    key={interval.semitones}
+                                    onClick={() => handleGuess(interval)}
+                                    disabled={gameState === 'success'}
+                                    className={`
+                    relative h-20 rounded-xl transition-all duration-200 
                     flex items-center justify-center overflow-hidden group
                     ${isCorrect
-                                                ? 'bg-celadon shadow-[0_10px_40px_rgba(156,222,159,0.5)] border-2 border-celadon/50 scale-105'
-                                                : isWrong
-                                                    ? 'bg-bitter-chocolate shadow-[0_10px_40px_rgba(120,38,40,0.6)] border-2 border-bitter-chocolate scale-95 shake'
-                                                    : `bg-${style.bg} hover:bg-${style.hover} shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] border-2 border-soft-blush/10 hover:border-soft-blush/30 hover:shadow-[0_10px_40px_-10px_rgba(119,160,169,0.3)] hover:scale-105 active:scale-100`}
+                                            ? 'bg-celadon shadow-[0_10px_40px_rgba(156,222,159,0.5)] border-2 border-celadon/50 scale-105'
+                                            : isWrong
+                                                ? 'bg-bitter-chocolate shadow-[0_10px_40px_rgba(120,38,40,0.6)] border-2 border-bitter-chocolate scale-95 shake'
+                                                : `bg-${style.bg} hover:bg-${style.hover} shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] border-2 border-soft-blush/10 hover:border-soft-blush/30 hover:shadow-[0_10px_40px_-10px_rgba(119,160,169,0.3)] hover:scale-105 active:scale-100`}
                     disabled:opacity-80 disabled:cursor-not-allowed
                   `}
-                                    >
-                                        <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-soft-blush/10 to-transparent pointer-events-none" />
+                                >
+                                    <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-soft-blush/10 to-transparent pointer-events-none" />
 
-                                        <span className={`relative z-10 font-bold text-lg text-center leading-tight px-3 transition-all ${isCorrect ? 'text-charcoal-blue text-xl' : 'text-soft-blush'}`}>
-                                            {interval.name.italian}
-                                        </span>
+                                    <span className={`relative z-10 font-bold text-base text-center leading-tight px-2 transition-all ${isCorrect ? 'text-charcoal-blue text-lg' : 'text-soft-blush'}`}>
+                                        {interval.name.italian}
+                                    </span>
 
-                                        {isCorrect && (
-                                            <div className="absolute top-2 right-2 bg-charcoal-blue/30 rounded-full p-1">
-                                                <Check className="w-5 h-5 text-charcoal-blue" />
-                                            </div>
-                                        )}
+                                    {isCorrect && (
+                                        <div className="absolute top-2 right-2 bg-charcoal-blue/30 rounded-full p-0.5">
+                                            <Check className="w-4 h-4 text-charcoal-blue" />
+                                        </div>
+                                    )}
 
-                                        {isWrong && (
-                                            <div className="absolute top-2 right-2 bg-soft-blush/30 rounded-full p-1">
-                                                <X className="w-5 h-5 text-soft-blush" />
-                                            </div>
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
+                                    {isWrong && (
+                                        <div className="absolute top-2 right-2 bg-soft-blush/30 rounded-full p-0.5">
+                                            <X className="w-4 h-4 text-soft-blush" />
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </div>
