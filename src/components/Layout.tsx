@@ -82,7 +82,7 @@ const Layout: React.FC<LayoutProps> = ({
             </main>
             {/* Footer */}
             <footer className="fixed bottom-2 right-4 z-40 pointer-events-none opacity-40 hover:opacity-80 transition-opacity duration-300">
-                <p className="text-[17px] font-medium text-slate-grey tracking-widest uppercase">by Seb</p>
+                <p className="text-[10px] font-medium text-slate-grey tracking-widest uppercase">by Seb</p>
             </footer>
         </div>
     );
