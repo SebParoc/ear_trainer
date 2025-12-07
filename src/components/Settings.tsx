@@ -1,6 +1,6 @@
 import React from 'react';
-import { INTERVALS, NOTES, getNoteName, type NoteName } from '../core/theory';
-import { Music2, Check, Globe, Piano as PianoIcon, Eye, Music, ArrowUpRight } from 'lucide-react';
+import { INTERVALS, NOTES, type NoteName } from '../core/theory';
+import { Check, Music, ArrowUpRight } from 'lucide-react';
 
 interface SettingsProps {
     language: 'anglo' | 'italian';
@@ -18,14 +18,10 @@ interface SettingsProps {
 }
 
 const Settings: React.FC<SettingsProps> = ({
-    language,
-    setLanguage,
     selectedIntervals,
     setSelectedIntervals,
     pianoMode,
     setPianoMode,
-    highlightFirstNote,
-    setHighlightFirstNote,
     selectedStartNote,
     setSelectedStartNote,
     intervalDirection,
