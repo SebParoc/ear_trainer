@@ -250,7 +250,7 @@ const Quiz: React.FC<QuizProps> = ({
     }
 
     return (
-        <div className={`w-full mx-auto flex flex-col items-center pb-8 px-4 ${pianoMode ? 'max-w-full h-[calc(100vh-85px)] lg:max-h-[500px] justify-center' : 'max-w-5xl'}`}>
+        <div className={`w-full mx-auto flex flex-col items-center pb-8 ${pianoMode ? 'max-w-full h-[calc(100vh-85px)] lg:max-h-[500px] justify-center px-0' : 'max-w-5xl px-4'}`}>
             {/* Piano Display */}
             {pianoMode && (
                 <div className="w-full h-full flex flex-col justify-center relative">

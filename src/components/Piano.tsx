@@ -29,13 +29,25 @@ const Piano: React.FC<PianoProps> = ({
     // Sort octaves to ensure correct order
     const keys = useMemo(() => {
         const sortedOctaves = [...visibleOctaves].sort((a, b) => a - b);
-        return sortedOctaves.flatMap(octave =>
+        const generatedKeys = sortedOctaves.flatMap(octave =>
             NOTES.map(noteName => ({
                 name: noteName,
                 isBlack: noteName.includes('#'),
                 note: { name: noteName, octave } as Note
             }))
         );
+
+        // Append High C to complete the range (C to C)
+        if (sortedOctaves.length > 0) {
+            const lastOctave = sortedOctaves[sortedOctaves.length - 1];
+            generatedKeys.push({
+                name: "C",
+                isBlack: false,
+                note: { name: "C", octave: lastOctave + 1 }
+            });
+        }
+
+        return generatedKeys;
     }, [visibleOctaves]);
 
     // Auto-scroll logic
@@ -136,7 +148,7 @@ const Piano: React.FC<PianoProps> = ({
 
 
                     return (
-                        <div key={`${key.name}-${key.note.octave}`} className="relative flex-shrink-0 w-24 h-full">
+                        <div key={`${key.name}-${key.note.octave}`} className="relative flex-1 min-w-[4rem] max-w-24 h-full">
                             {/* White Key */}
                             <button
                                 disabled={disabled}
