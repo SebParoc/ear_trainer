@@ -25,7 +25,19 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #071013 0%, #243b4a 100%);
   overflow-x: hidden;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
   -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+button,
+a {
+  touch-action: manipulation;
 }
 
 @layer utilities {
