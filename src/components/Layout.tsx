@@ -34,10 +34,10 @@ const Layout: React.FC<LayoutProps> = ({
         <div className="min-h-screen bg-gradient-to-br from-ink-black via-charcoal-blue to-ink-black text-soft-blush font-sans selection:bg-cool-steel/30 overflow-x-hidden">
             {/* Dynamic Background */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-bitter-chocolate/25 rounded-full blur-[150px] animate-pulse" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-cool-steel/20 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
-                <div className="absolute top-[30%] right-[15%] w-[40%] h-[40%] bg-celadon/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-                <div className="absolute bottom-[20%] left-[20%] w-[35%] h-[35%] bg-slate-grey/15 rounded-full blur-[130px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-bitter-chocolate/25 rounded-full blur-[150px] animate-pulse will-change-transform" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-cool-steel/20 rounded-full blur-[150px] animate-pulse will-change-transform" style={{ animationDelay: '1s' }} />
+                <div className="absolute top-[30%] right-[15%] w-[40%] h-[40%] bg-celadon/10 rounded-full blur-[120px] animate-pulse will-change-transform" style={{ animationDelay: '2s' }} />
+                <div className="absolute bottom-[20%] left-[20%] w-[35%] h-[35%] bg-slate-grey/15 rounded-full blur-[130px] will-change-transform" />
             </div>
 
             {/* Header */}
@@ -62,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({
 
                 <button
                     onClick={onToggleSettings}
-                    className={`relative rounded-xl transition-all duration-300 group overflow-hidden ${showSettings
+                    className={`relative rounded-xl transition-all duration-300 group overflow-hidden will-change-transform ${showSettings
                         ? 'bg-gradient-to-br from-soft-blush to-dust-grey text-charcoal-blue shadow-lg scale-110'
                         : 'bg-cool-steel/20 text-soft-blush hover:bg-cool-steel/30 border border-cool-steel/30 hover:border-cool-steel/50 hover:scale-105'
                         } ${pianoMode ? 'p-2' : 'p-3.5'}`}

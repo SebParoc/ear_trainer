@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { NOTES, getNoteName, type Note } from '../core/theory';
 import { playNote } from '../core/audio';
 
@@ -27,14 +27,16 @@ const Piano: React.FC<PianoProps> = ({
 
     // Generate keys based on visibleOctaves
     // Sort octaves to ensure correct order
-    const sortedOctaves = [...visibleOctaves].sort((a, b) => a - b);
-    const keys = sortedOctaves.flatMap(octave =>
-        NOTES.map(noteName => ({
-            name: noteName,
-            isBlack: noteName.includes('#'),
-            note: { name: noteName, octave } as Note
-        }))
-    );
+    const keys = useMemo(() => {
+        const sortedOctaves = [...visibleOctaves].sort((a, b) => a - b);
+        return sortedOctaves.flatMap(octave =>
+            NOTES.map(noteName => ({
+                name: noteName,
+                isBlack: noteName.includes('#'),
+                note: { name: noteName, octave } as Note
+            }))
+        );
+    }, [visibleOctaves]);
 
     // Auto-scroll logic
     useEffect(() => {
