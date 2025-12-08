@@ -9,6 +9,7 @@ interface PianoProps {
     language: 'anglo' | 'italian';
     scrollAlignment?: 'left' | 'right';
     visibleOctaves?: number[];
+    disabled?: boolean;
 }
 
 const Piano: React.FC<PianoProps> = ({
@@ -16,7 +17,8 @@ const Piano: React.FC<PianoProps> = ({
     onNoteClick,
     language,
     scrollAlignment = 'left',
-    visibleOctaves = [3, 4, 5]
+    visibleOctaves = [3, 4, 5],
+    disabled = false
 }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastStartNoteRef = useRef<string | null>(null);
@@ -88,6 +90,8 @@ const Piano: React.FC<PianoProps> = ({
     }, [highlightNotes, scrollAlignment]); // keys is stable enough
 
     const handleNoteClick = (note: Note) => {
+        if (disabled) return;
+
         playNote(note);
         onNoteClick?.(note);
 
@@ -133,6 +137,7 @@ const Piano: React.FC<PianoProps> = ({
                         <div key={`${key.name}-${key.note.octave}`} className="relative flex-shrink-0 w-24 h-full">
                             {/* White Key */}
                             <button
+                                disabled={disabled}
                                 className={`
                   w-full h-full bg-gradient-to-b from-white via-soft-blush to-dust-grey
                   border-r border-slate-grey/20 rounded-b-lg active:from-dust-grey active:to-rosy-granite/50
@@ -140,6 +145,7 @@ const Piano: React.FC<PianoProps> = ({
                   active:scale-y-[0.97] active:shadow-[inset_0_4px_12px_rgba(0,0,0,0.2)]
                   hover:from-white hover:to-soft-blush group
                   ${isHighlighted ? '!bg-gradient-to-b !from-celadon/60 !via-celadon !to-celadon/80 shadow-[0_0_30px_rgba(156,222,159,0.8),inset_0_-4px_12px_rgba(156,222,159,0.3)] z-10' : ''}
+                  ${disabled ? 'cursor-not-allowed opacity-90 active:scale-y-100 hover:from-white hover:to-dust-grey' : ''}
                 `}
                                 onClick={() => handleNoteClick(key.note)}
                             >

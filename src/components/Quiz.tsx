@@ -279,6 +279,7 @@ const Quiz: React.FC<QuizProps> = ({
 
                                 return Array.from(octaves).sort((a, b) => a - b);
                             })()}
+                            disabled={gameState !== 'waiting' || isPlaying}
                         />
                     </div>
 
