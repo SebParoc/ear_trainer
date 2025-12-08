@@ -67,7 +67,8 @@ const Quiz: React.FC<QuizProps> = ({
 
             interval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
 
-            // Check bounds (C3 to B5) AND selected octaves
+            // Check bounds (C2 to B5)
+            // We use C2 as absolute minimum and B5 as absolute maximum supported by the engine/audio
             const semitones = direction === 'Ascending' ? interval.semitones : -interval.semitones;
             const endNote = getIntervalNote(startNote, semitones);
 
@@ -78,11 +79,12 @@ const Quiz: React.FC<QuizProps> = ({
             const minValue = 2 * 12 + NOTES.indexOf("C"); // C2 (Lowest supported)
             const maxValue = 5 * 12 + NOTES.indexOf("B"); // B5 (Highest supported)
 
-            // Check if both start and end notes are within the SELECTED octaves
+            // Check if start note is in selected octaves (Strict)
+            // But allow end note to go outside selected octaves (Adaptive)
+            // As long as it stays within global bounds
             const isStartInOctave = selectedOctaves.includes(startNote.octave);
-            const isEndInOctave = selectedOctaves.includes(endNote.octave);
 
-            if (startValue >= minValue && startValue <= maxValue && endValue >= minValue && endValue <= maxValue && isStartInOctave && isEndInOctave) {
+            if (startValue >= minValue && startValue <= maxValue && endValue >= minValue && endValue <= maxValue && isStartInOctave) {
                 valid = true;
             }
             attempts++;
@@ -99,7 +101,7 @@ const Quiz: React.FC<QuizProps> = ({
         if (hasInteracted) {
             playSequence(startNote, interval, direction);
         }
-    }, [selectedIntervals, selectedStartNote, intervalDirection, hasInteracted]);
+    }, [selectedIntervals, selectedStartNote, intervalDirection, hasInteracted, selectedOctaves]);
 
     const playSequence = (startNote: Note, interval: Interval, direction: 'Ascending' | 'Descending') => {
         if (isPlaying) return;
@@ -259,7 +261,24 @@ const Quiz: React.FC<QuizProps> = ({
                             language={language}
                             onNoteClick={(note) => handlePianoGuess(note)}
                             scrollAlignment={currentDirection === 'Ascending' ? 'left' : 'right'}
-                            visibleOctaves={selectedOctaves}
+                            visibleOctaves={(() => {
+                                // Start with selected octaves
+                                const octaves = new Set(selectedOctaves);
+
+                                // Add start note octave if present
+                                if (currentStartNote) {
+                                    octaves.add(currentStartNote.octave);
+                                }
+
+                                // Add end note octave if present (calculated from interval)
+                                if (currentStartNote && currentInterval) {
+                                    const semitones = currentDirection === 'Ascending' ? currentInterval.semitones : -currentInterval.semitones;
+                                    const endNote = getIntervalNote(currentStartNote, semitones);
+                                    octaves.add(endNote.octave);
+                                }
+
+                                return Array.from(octaves).sort((a, b) => a - b);
+                            })()}
                         />
                     </div>
 
