@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({
     const showRotationWarning = pianoMode && !isLandscape && !showSettings;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-ink-black via-charcoal-blue to-ink-black text-soft-blush font-sans selection:bg-cool-steel/30 overflow-x-hidden transform-gpu">
+        <div className="min-h-screen bg-gradient-to-br from-ink-black via-charcoal-blue to-ink-black text-soft-blush font-sans selection:bg-cool-steel/30 overflow-x-hidden">
             {/* Dynamic Background */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-bitter-chocolate/25 rounded-full blur-[150px] animate-pulse" />
