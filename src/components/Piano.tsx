@@ -105,6 +105,13 @@ const Piano: React.FC<PianoProps> = ({
         }
     }, [highlightNotes, scrollAlignment]); // keys is stable enough
 
+    // Clear visible labels when state resets to neutral (new turn)
+    useEffect(() => {
+        if (highlightState === 'neutral') {
+            setVisibleLabels(new Set());
+        }
+    }, [highlightState]);
+
     const handleNoteClick = (note: Note) => {
         if (disabled) return;
 
