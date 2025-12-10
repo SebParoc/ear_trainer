@@ -279,13 +279,13 @@ const Settings: React.FC<SettingsProps> = ({
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
                     <button
                         onClick={() => toggleCategory('Major')}
-                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
+                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium leading-tight
                             ${isCategorySelected('Major')
                                 ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
                                 : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
                             }`}
                     >
-                        Maggiori/Giusti
+                        Maggiori/<br />Giusti
                     </button>
                     <button
                         onClick={() => toggleCategory('Minor')}
