@@ -180,7 +180,7 @@ const Piano: React.FC<PianoProps> = ({
                             >
                                 <span className={`
                   absolute bottom-6 left-1/2 -translate-x-1/2 text-base font-bold transition-all duration-200
-                  ${isLabelVisible ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-charcoal-blue'}
+                  ${isLabelVisible ? 'text-charcoal-blue opacity-100 text-lg' : 'text-rosy-granite opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:text-charcoal-blue'}
                 `}>
                                     {getNoteName(key.name, language)}
                                     <span className="text-[10px] align-top opacity-60 ml-0.5">{key.note.octave}</span>
@@ -216,7 +216,7 @@ const Piano: React.FC<PianoProps> = ({
                                         {/* Note Label */}
                                         <span className={`
                                             absolute bottom-4 left-1/2 -translate-x-1/2 text-sm font-bold transition-all duration-200 text-white
-                                            ${isNextKeyLabelVisible ? 'opacity-100' : 'opacity-0 [@media(hover:hover)]:group-hover:opacity-100'}
+                                            ${isNextKeyLabelVisible ? 'opacity-100' : 'opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100'}
                                         `}>
                                             {getNoteName(nextKey.name, language)}
                                             <span className="text-[10px] align-top opacity-60 ml-0.5">{nextKey.note.octave}</span>
