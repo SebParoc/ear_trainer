@@ -142,7 +142,7 @@ const Settings: React.FC<SettingsProps> = ({
                         onClick={() => setDuckSoundEnabled(!duckSoundEnabled)}
                     >
                         <div className="flex-1">
-                            <div className="font-semibold text-lg text-soft-blush mb-1">Suoni Ducky Idol</div>
+                            <div className="font-semibold text-lg text-soft-blush mb-1">Ducky Idol</div>
                             <div className="text-sm text-slate-grey">Abilita suoni di papera e feedback visivo</div>
                         </div>
                         <div className={`relative w-16 h-9 rounded-full transition-all duration-300 ${duckSoundEnabled ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_20px_rgba(156,222,159,0.4)]' : 'bg-rosy-granite/50'}`}>
