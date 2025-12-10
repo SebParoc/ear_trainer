@@ -17,6 +17,7 @@ function App() {
   const [selectedStartNote, setSelectedStartNote] = useState<NoteName | 'Random'>('Random');
   const [intervalDirection, setIntervalDirection] = useState<'Ascending' | 'Descending' | 'Both'>('Ascending');
   const [selectedOctaves, setSelectedOctaves] = useState<number[]>([3, 4]);
+  const [duckSoundEnabled, setDuckSoundEnabled] = useState(true);
 
   const [headerCenter, setHeaderCenter] = useState<React.ReactNode>(null);
 
@@ -44,6 +45,8 @@ function App() {
             setIntervalDirection={setIntervalDirection}
             selectedOctaves={selectedOctaves}
             setSelectedOctaves={setSelectedOctaves}
+            duckSoundEnabled={duckSoundEnabled}
+            setDuckSoundEnabled={setDuckSoundEnabled}
             onClose={() => setShowSettings(false)}
           />
           <button
@@ -64,6 +67,7 @@ function App() {
           intervalDirection={intervalDirection}
           selectedOctaves={selectedOctaves}
           setHeaderCenter={setHeaderCenter}
+          duckSoundEnabled={duckSoundEnabled}
         />
       )}
     </Layout>

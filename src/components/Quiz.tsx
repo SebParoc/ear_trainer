@@ -13,6 +13,7 @@ interface QuizProps {
     intervalDirection: 'Ascending' | 'Descending' | 'Both';
     selectedOctaves: number[];
     setHeaderCenter: (node: React.ReactNode) => void;
+    duckSoundEnabled: boolean;
 }
 
 type GameState = 'waiting' | 'playing' | 'success' | 'error';
@@ -25,7 +26,8 @@ const Quiz: React.FC<QuizProps> = ({
     selectedStartNote,
     intervalDirection,
     selectedOctaves,
-    setHeaderCenter
+    setHeaderCenter,
+    duckSoundEnabled
 }) => {
     const [currentStartNote, setCurrentStartNote] = useState<Note | null>(null);
     const [currentInterval, setCurrentInterval] = useState<Interval | null>(null);
@@ -196,7 +198,9 @@ const Quiz: React.FC<QuizProps> = ({
 
     const handleSuccess = () => {
         setGameState('success');
-        playDuckSound();
+        if (duckSoundEnabled) {
+            playDuckSound();
+        }
         if (currentStartNote && currentInterval) {
             const semitones = currentDirection === 'Ascending' ? currentInterval.semitones : -currentInterval.semitones;
             const endNote = getIntervalNote(currentStartNote, semitones);
@@ -207,7 +211,9 @@ const Quiz: React.FC<QuizProps> = ({
 
     const handleError = (intervalSemitones?: number) => {
         setGameState('error');
-        playDuckSound();
+        if (duckSoundEnabled) {
+            playDuckSound();
+        }
         if (intervalSemitones) {
             setWrongButton(intervalSemitones);
             setTimeout(() => setWrongButton(null), 500);
@@ -288,7 +294,7 @@ const Quiz: React.FC<QuizProps> = ({
                     {/* Piano Mode Feedback Overlay (Centered on Piano/Screen) */}
                     <div className={`absolute inset-0 flex justify-center items-center pointer-events-none transition-all duration-300 z-50 ${gameState === 'success' || gameState === 'error' ? 'opacity-100' : 'opacity-0'
                         }`}>
-                        {gameState === 'success' && (
+                        {gameState === 'success' && duckSoundEnabled && (
                             <div className="flex flex-col items-center">
                                 <img src="/images/corretto.png" alt="Corretto" className="h-48 w-auto max-w-none drop-shadow-2xl animate-bounce-short" />
                                 <div className="mt-2 px-4 py-1 bg-charcoal-blue/80 backdrop-blur-md rounded-full border border-celadon/30 shadow-lg animate-fade-in-up">
@@ -298,7 +304,16 @@ const Quiz: React.FC<QuizProps> = ({
                                 </div>
                             </div>
                         )}
-                        {gameState === 'error' && (
+                        {gameState === 'success' && !duckSoundEnabled && (
+                            <div className="flex flex-col items-center animate-fade-in-up">
+                                <div className="px-6 py-2 bg-charcoal-blue/90 backdrop-blur-md rounded-full border border-celadon/50 shadow-[0_0_30px_rgba(156,222,159,0.3)]">
+                                    <span className="text-xl font-bold text-celadon tracking-wide">
+                                        {currentInterval?.name[language]}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        {gameState === 'error' && duckSoundEnabled && (
                             <img src="/images/incorretto.png" alt="Incorretto" className="h-48 w-auto max-w-none drop-shadow-2xl animate-shake" />
                         )}
                     </div>
@@ -342,10 +357,10 @@ const Quiz: React.FC<QuizProps> = ({
                             {/* Quiz Mode Feedback Overlay (Centered on Play Button) */}
                             <div className={`absolute inset-0 flex justify-center items-center pointer-events-none transition-all duration-300 z-50 ${gameState === 'success' || gameState === 'error' ? 'opacity-100' : 'opacity-0'
                                 }`}>
-                                {gameState === 'success' && (
+                                {gameState === 'success' && duckSoundEnabled && (
                                     <img src="/images/corretto.png" alt="Corretto" className="h-40 w-auto max-w-none drop-shadow-2xl animate-bounce-short" />
                                 )}
-                                {gameState === 'error' && (
+                                {gameState === 'error' && duckSoundEnabled && (
                                     <img src="/images/incorretto.png" alt="Incorretto" className="h-40 w-auto max-w-none drop-shadow-2xl animate-shake" />
                                 )}
                             </div>

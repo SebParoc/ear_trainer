@@ -17,6 +17,8 @@ interface SettingsProps {
     setIntervalDirection: (dir: 'Ascending' | 'Descending' | 'Both') => void;
     selectedOctaves: number[];
     setSelectedOctaves: (octaves: number[]) => void;
+    duckSoundEnabled: boolean;
+    setDuckSoundEnabled: (enabled: boolean) => void;
     onClose: () => void;
 }
 
@@ -33,6 +35,8 @@ const Settings: React.FC<SettingsProps> = ({
     setIntervalDirection,
     selectedOctaves,
     setSelectedOctaves,
+    duckSoundEnabled,
+    setDuckSoundEnabled,
     onClose
 }) => {
     const toggleInterval = (semitones: number) => {
@@ -130,6 +134,19 @@ const Settings: React.FC<SettingsProps> = ({
                         </div>
                         <div className={`relative w-16 h-9 rounded-full transition-all duration-300 ${pianoMode ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_20px_rgba(156,222,159,0.4)]' : 'bg-rosy-granite/50'}`}>
                             <div className={`absolute top-1 left-1 w-7 h-7 bg-soft-blush rounded-full transition-all duration-300 shadow-lg ${pianoMode ? 'translate-x-7' : 'translate-x-0'}`} />
+                        </div>
+                    </div>
+
+                    <div
+                        className="flex items-center justify-between cursor-pointer p-4 rounded-2xl bg-ink-black/20 hover:bg-ink-black/40 transition-all duration-200 border border-cool-steel/10"
+                        onClick={() => setDuckSoundEnabled(!duckSoundEnabled)}
+                    >
+                        <div className="flex-1">
+                            <div className="font-semibold text-lg text-soft-blush mb-1">Suoni Ducky Idol</div>
+                            <div className="text-sm text-slate-grey">Abilita suoni di papera e feedback visivo</div>
+                        </div>
+                        <div className={`relative w-16 h-9 rounded-full transition-all duration-300 ${duckSoundEnabled ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_20px_rgba(156,222,159,0.4)]' : 'bg-rosy-granite/50'}`}>
+                            <div className={`absolute top-1 left-1 w-7 h-7 bg-soft-blush rounded-full transition-all duration-300 shadow-lg ${duckSoundEnabled ? 'translate-x-7' : 'translate-x-0'}`} />
                         </div>
                     </div>
                 </div>
