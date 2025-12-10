@@ -82,6 +82,14 @@ const Settings: React.FC<SettingsProps> = ({
         }
     };
 
+    const isCategorySelected = (type: 'Major' | 'Minor' | 'Diminished') => {
+        const categoryIntervals = INTERVALS.filter(i => {
+            if (type === 'Major') return i.type === 'Major' || i.type === 'Perfect';
+            return i.type === type;
+        }).map(i => i.semitones);
+        return categoryIntervals.every(i => selectedIntervals.includes(i));
+    };
+
     return (
         <div className="w-full max-w-3xl mx-auto pb-10 px-4 animate-fade-in-up">
             <div className="mb-10 text-center">
@@ -235,7 +243,7 @@ const Settings: React.FC<SettingsProps> = ({
                             key={dir}
                             onClick={() => setIntervalDirection(dir)}
                             className={`
-                py-2 rounded-xl font-medium text-sm transition-all duration-200
+                py-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200
                 ${intervalDirection === dir
                                     ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
                                     : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
@@ -249,7 +257,7 @@ const Settings: React.FC<SettingsProps> = ({
 
             {/* Intervals Card */}
             <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-celadon/20">
                             <Check className="w-5 h-5 text-celadon" />
@@ -268,22 +276,34 @@ const Settings: React.FC<SettingsProps> = ({
                 </div>
 
                 {/* Category Toggles */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
                     <button
                         onClick={() => toggleCategory('Major')}
-                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
+                            ${isCategorySelected('Major')
+                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
+                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
+                            }`}
                     >
                         Maggiori/Giusti
                     </button>
                     <button
                         onClick={() => toggleCategory('Minor')}
-                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
+                            ${isCategorySelected('Minor')
+                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
+                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
+                            }`}
                     >
                         Minori
                     </button>
                     <button
                         onClick={() => toggleCategory('Diminished')}
-                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
+                            ${isCategorySelected('Diminished')
+                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
+                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
+                            }`}
                     >
                         Diminuiti
                     </button>
