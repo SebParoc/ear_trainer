@@ -10,6 +10,7 @@ interface PianoProps {
     scrollAlignment?: 'left' | 'right';
     visibleOctaves?: number[];
     disabled?: boolean;
+    highlightState?: 'neutral' | 'success' | 'error';
 }
 
 const Piano: React.FC<PianoProps> = ({
@@ -18,7 +19,8 @@ const Piano: React.FC<PianoProps> = ({
     language,
     scrollAlignment = 'left',
     visibleOctaves = [3, 4, 5],
-    disabled = false
+    disabled = false,
+    highlightState = 'neutral'
 }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastStartNoteRef = useRef<string | null>(null);
@@ -158,7 +160,13 @@ const Piano: React.FC<PianoProps> = ({
                   transition-all duration-150 ease-out transform origin-top
                   active:scale-y-[0.97] active:shadow-[inset_0_4px_12px_rgba(0,0,0,0.2)]
                   hover:from-white hover:to-soft-blush group
-                  ${isHighlighted ? '!bg-gradient-to-b !from-celadon/60 !via-celadon !to-celadon/80 shadow-[0_0_30px_rgba(156,222,159,0.8),inset_0_-4px_12px_rgba(156,222,159,0.3)] z-10' : ''}
+                  ${isHighlighted ?
+                                        highlightState === 'success'
+                                            ? '!bg-gradient-to-b !from-celadon/60 !via-celadon !to-celadon/80 shadow-[0_0_30px_rgba(156,222,159,0.8),inset_0_-4px_12px_rgba(156,222,159,0.3)] z-10'
+                                            : highlightState === 'error'
+                                                ? '!bg-gradient-to-b !from-bitter-chocolate/60 !via-bitter-chocolate !to-bitter-chocolate/80 shadow-[0_0_30px_rgba(120,38,40,0.8),inset_0_-4px_12px_rgba(120,38,40,0.3)] z-10'
+                                                : '!bg-gradient-to-b !from-cool-steel/60 !via-cool-steel !to-cool-steel/80 shadow-[0_0_30px_rgba(119,160,169,0.8),inset_0_-4px_12px_rgba(119,160,169,0.3)] z-10'
+                                        : ''}
                   ${disabled ? 'cursor-not-allowed opacity-90 active:scale-y-100 hover:from-white hover:to-dust-grey' : ''}
                 `}
                                 onClick={() => handleNoteClick(key.note)}
@@ -183,7 +191,12 @@ const Piano: React.FC<PianoProps> = ({
                       active:scale-y-[0.96] border-x-2 border-b-2 border-ink-black/50
                       hover:from-slate-grey/60 hover:via-charcoal-blue hover:to-ink-black group
                       ${highlightNotes.some(n => n.name === nextKey.name && n.octave === nextKey.note.octave)
-                                                ? '!bg-gradient-to-b !from-cool-steel !via-bitter-chocolate !to-charcoal-blue shadow-[0_0_25px_rgba(119,160,169,0.8)] scale-105' : ''}
+                                                ? highlightState === 'success'
+                                                    ? '!bg-gradient-to-b !from-celadon !via-celadon/80 !to-charcoal-blue shadow-[0_0_25px_rgba(156,222,159,0.8)] scale-105'
+                                                    : highlightState === 'error'
+                                                        ? '!bg-gradient-to-b !from-bitter-chocolate !via-bitter-chocolate/80 !to-charcoal-blue shadow-[0_0_25px_rgba(120,38,40,0.8)] scale-105'
+                                                        : '!bg-gradient-to-b !from-cool-steel !via-cool-steel/80 !to-charcoal-blue shadow-[0_0_25px_rgba(119,160,169,0.8)] scale-105'
+                                                : ''}
                     `}
                                         onClick={(e) => {
                                             e.stopPropagation();

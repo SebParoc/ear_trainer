@@ -76,3 +76,14 @@ export function playDuckSound() {
         duckPlayer.start();
     }
 }
+
+export function playSuccessSound() {
+    if (Tone.context.state !== 'running') {
+        initAudio().catch(console.error);
+    }
+
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+    const now = Tone.now();
+    // Play a pleasant major triad arpeggio
+    synth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
+}

@@ -55,6 +55,25 @@ const Settings: React.FC<SettingsProps> = ({
         }
     };
 
+    const toggleCategory = (type: 'Major' | 'Minor' | 'Diminished') => {
+        const intervalsToToggle = INTERVALS.filter(i => {
+            if (type === 'Major') return i.type === 'Major' || i.type === 'Perfect';
+            return i.type === type;
+        }).map(i => i.semitones);
+
+        // Check if all are already selected
+        const allSelected = intervalsToToggle.every(i => selectedIntervals.includes(i));
+
+        if (allSelected) {
+            // Deselect all
+            setSelectedIntervals(selectedIntervals.filter(i => !intervalsToToggle.includes(i)));
+        } else {
+            // Select all (merge with existing)
+            const newSelection = new Set([...selectedIntervals, ...intervalsToToggle]);
+            setSelectedIntervals(Array.from(newSelection).sort((a, b) => a - b));
+        }
+    };
+
     const toggleAll = () => {
         if (selectedIntervals.length === INTERVALS.length) {
             setSelectedIntervals([]);
@@ -245,6 +264,28 @@ const Settings: React.FC<SettingsProps> = ({
                         <span className="relative z-10">
                             {selectedIntervals.length === INTERVALS.length ? 'Deseleziona' : 'Tutti'}
                         </span>
+                    </button>
+                </div>
+
+                {/* Category Toggles */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                    <button
+                        onClick={() => toggleCategory('Major')}
+                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                    >
+                        Maggiori/Giusti
+                    </button>
+                    <button
+                        onClick={() => toggleCategory('Minor')}
+                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                    >
+                        Minori
+                    </button>
+                    <button
+                        onClick={() => toggleCategory('Diminished')}
+                        className="py-3 px-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/40 border border-cool-steel/20 hover:border-cool-steel/40 transition-all duration-200 text-sm font-medium text-cool-steel hover:text-soft-blush"
+                    >
+                        Diminuiti
                     </button>
                 </div>
 

@@ -12,17 +12,23 @@ export interface Interval {
         anglo: string;
         italian: string;
     };
+    type: 'Major' | 'Minor' | 'Perfect' | 'Diminished';
 }
 
 export const INTERVALS: Interval[] = [
-    { semitones: 0, name: { anglo: "Unison", italian: "Prima Giusta" } },
-    { semitones: 2, name: { anglo: "Major 2nd", italian: "Seconda Maggiore" } },
-    { semitones: 4, name: { anglo: "Major 3rd", italian: "Terza Maggiore" } },
-    { semitones: 5, name: { anglo: "Perfect 4th", italian: "Quarta Giusta" } },
-    { semitones: 7, name: { anglo: "Perfect 5th", italian: "Quinta Giusta" } },
-    { semitones: 9, name: { anglo: "Major 6th", italian: "Sesta Maggiore" } },
-    { semitones: 11, name: { anglo: "Major 7th", italian: "Settima Maggiore" } },
-    { semitones: 12, name: { anglo: "Octave", italian: "Ottava" } },
+    { semitones: 0, name: { anglo: "Unison", italian: "Prima Giusta" }, type: 'Perfect' },
+    { semitones: 1, name: { anglo: "Minor 2nd", italian: "Seconda Minore" }, type: 'Minor' },
+    { semitones: 2, name: { anglo: "Major 2nd", italian: "Seconda Maggiore" }, type: 'Major' },
+    { semitones: 3, name: { anglo: "Minor 3rd", italian: "Terza Minore" }, type: 'Minor' },
+    { semitones: 4, name: { anglo: "Major 3rd", italian: "Terza Maggiore" }, type: 'Major' },
+    { semitones: 5, name: { anglo: "Perfect 4th", italian: "Quarta Giusta" }, type: 'Perfect' },
+    { semitones: 6, name: { anglo: "Diminished 5th", italian: "Quinta Diminuita" }, type: 'Diminished' },
+    { semitones: 7, name: { anglo: "Perfect 5th", italian: "Quinta Giusta" }, type: 'Perfect' },
+    { semitones: 8, name: { anglo: "Minor 6th", italian: "Sesta Minore" }, type: 'Minor' },
+    { semitones: 9, name: { anglo: "Major 6th", italian: "Sesta Maggiore" }, type: 'Major' },
+    { semitones: 10, name: { anglo: "Minor 7th", italian: "Settima Minore" }, type: 'Minor' },
+    { semitones: 11, name: { anglo: "Major 7th", italian: "Settima Maggiore" }, type: 'Major' },
+    { semitones: 12, name: { anglo: "Octave", italian: "Ottava" }, type: 'Perfect' },
 ];
 
 export const NOTES: NoteName[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];

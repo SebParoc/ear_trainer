@@ -196,6 +196,7 @@ const Quiz: React.FC<QuizProps> = ({
 
     const handleSuccess = () => {
         setGameState('success');
+        playDuckSound();
         if (currentStartNote && currentInterval) {
             const semitones = currentDirection === 'Ascending' ? currentInterval.semitones : -currentInterval.semitones;
             const endNote = getIntervalNote(currentStartNote, semitones);
@@ -280,6 +281,7 @@ const Quiz: React.FC<QuizProps> = ({
                                 return Array.from(octaves).sort((a, b) => a - b);
                             })()}
                             disabled={gameState !== 'waiting' || isPlaying}
+                            highlightState={gameState === 'success' ? 'success' : gameState === 'error' ? 'error' : 'neutral'}
                         />
                     </div>
 
