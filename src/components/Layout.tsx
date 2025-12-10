@@ -41,11 +41,11 @@ const Layout: React.FC<LayoutProps> = ({
             </div>
 
             {/* Header */}
-            <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-gradient-to-b from-charcoal-blue/50 to-transparent backdrop-blur-xl border-b border-cool-steel/20 shadow-lg transition-all duration-300 ${pianoMode ? 'px-4 py-2' : 'px-6 py-5'}`}>
+            <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-gradient-to-b from-charcoal-blue/50 to-transparent backdrop-blur-xl border-b border-cool-steel/20 shadow-lg transition-all duration-300 ${pianoMode ? 'px-4 py-2' : 'px-4 py-3'}`}>
                 <div className="flex items-center gap-4">
                     <div className="relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-bitter-chocolate to-cool-steel rounded-2xl blur-md opacity-70" />
-                        <div className={`relative rounded-2xl bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center shadow-lg border border-soft-blush/20 overflow-hidden transition-all duration-300 ${pianoMode ? 'w-10 h-10' : 'w-12 h-12'}`}>
+                        <div className={`relative rounded-2xl bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center shadow-lg border border-soft-blush/20 overflow-hidden transition-all duration-300 ${pianoMode ? 'w-10 h-10' : 'w-10 h-10'}`}>
                             <img src="/images/logo.png" alt="AFM Logo" className="w-full h-full object-cover" />
                         </div>
                     </div>
@@ -75,7 +75,7 @@ const Layout: React.FC<LayoutProps> = ({
             </header>
 
             {/* Main Content */}
-            <main className={`px-4 min-h-screen flex flex-col justify-center relative z-10 transition-all duration-300 ${pianoMode ? 'pt-20 pb-4' : 'pt-28 pb-12'}`}>
+            <main className={`px-4 min-h-screen flex flex-col justify-center relative z-10 transition-all duration-300 ${pianoMode ? 'pt-20 pb-4' : 'pt-20 pb-8'}`}>
                 {showRotationWarning ? (
                     <div className="flex flex-col items-center justify-center text-center p-8 animate-fade-in">
                         <div className="w-20 h-20 mb-6 border-2 border-cool-steel/30 rounded-2xl flex items-center justify-center animate-spin-slow bg-charcoal-blue/50 backdrop-blur-md">

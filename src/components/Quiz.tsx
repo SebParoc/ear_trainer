@@ -310,7 +310,7 @@ const Quiz: React.FC<QuizProps> = ({
                 <div className={`w-full max-w-2xl bg-gradient-to-br from-charcoal-blue/40 to-ink-black/60 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/20 p-6`}>
 
                     {/* Play Button Area */}
-                    <div className="flex flex-col items-center mb-8">
+                    <div className="flex flex-col items-center mb-4">
                         <div className="relative">
                             {/* Glow effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-cool-steel/40 via-celadon/30 to-cool-steel/40 blur-3xl rounded-full animate-pulse scale-125" />
@@ -322,7 +322,7 @@ const Quiz: React.FC<QuizProps> = ({
                                 relative rounded-full bg-gradient-to-br from-bitter-chocolate via-cool-steel to-charcoal-blue flex items-center justify-center
                                 shadow-[0_20px_60px_-10px_rgba(120,38,40,0.8)] border-4 border-white/30 hover:border-white/50
                                 active:scale-95 transition-all duration-300 group overflow-hidden transform-gpu
-                                w-28 h-28
+                                w-20 h-20
                                 ${isPlaying ? 'opacity-80 cursor-wait' : ''}
                             `}
                             >
@@ -333,9 +333,9 @@ const Quiz: React.FC<QuizProps> = ({
                                 <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cool-steel/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                 {isPlaying ? (
-                                    <Volume2 className="w-12 h-12 text-soft-blush animate-pulse relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
+                                    <Volume2 className="w-8 h-8 text-soft-blush animate-pulse relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
                                 ) : (
-                                    <Play className="w-12 h-12 ml-1 text-soft-blush fill-soft-blush relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
+                                    <Play className="w-8 h-8 ml-1 text-soft-blush fill-soft-blush relative z-10 drop-shadow-[0_0_10px_rgba(241,222,222,0.5)]" />
                                 )}
                             </button>
 
@@ -360,7 +360,7 @@ const Quiz: React.FC<QuizProps> = ({
                     </div>
 
                     {/* Answer Grid */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                         {INTERVALS.filter(i => selectedIntervals.includes(i.semitones)).map((interval) => {
                             const isCorrect = gameState === 'success' && currentInterval?.semitones === interval.semitones;
                             const isWrong = wrongButton === interval.semitones;
@@ -371,7 +371,7 @@ const Quiz: React.FC<QuizProps> = ({
                                     onClick={() => handleGuess(interval)}
                                     disabled={gameState === 'success'}
                                     className={`
-                    relative h-20 rounded-xl transition-all duration-200 
+                    relative h-14 rounded-xl transition-all duration-200 
                     flex items-center justify-center overflow-hidden group
                     ${isCorrect
                                             ? 'bg-celadon shadow-[0_10px_40px_rgba(156,222,159,0.5)] border-2 border-celadon/50 scale-105'
