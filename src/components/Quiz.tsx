@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Check, X, Volume2, Music2 } from 'lucide-react';
 import { getIntervalNote, type Note, type Interval, type NoteName, INTERVALS, NOTES } from '../core/theory';
-import { playNote, playInterval, playDuckSound } from '../core/audio';
+import { playNote, playInterval, playDuckSound, playHappyDuckSound } from '../core/audio';
 import Piano from './Piano';
 
 interface QuizProps {
@@ -199,7 +199,7 @@ const Quiz: React.FC<QuizProps> = ({
     const handleSuccess = () => {
         setGameState('success');
         if (duckSoundEnabled) {
-            playDuckSound();
+            playHappyDuckSound();
         }
         if (currentStartNote && currentInterval) {
             const semitones = currentDirection === 'Ascending' ? currentInterval.semitones : -currentInterval.semitones;

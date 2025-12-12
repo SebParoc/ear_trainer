@@ -77,6 +77,24 @@ export function playDuckSound() {
     }
 }
 
+let happyDuckPlayer: Tone.Player | null = null;
+
+export function playHappyDuckSound() {
+    // Ensure context is running, but don't block
+    if (Tone.context.state !== 'running') {
+        initAudio().catch(console.error);
+    }
+
+    if (!happyDuckPlayer) {
+        happyDuckPlayer = new Tone.Player({
+            url: "/sounds/happyduck.mp3",
+            autostart: true,
+        }).toDestination();
+    } else {
+        happyDuckPlayer.start();
+    }
+}
+
 export function playSuccessSound() {
     if (Tone.context.state !== 'running') {
         initAudio().catch(console.error);
