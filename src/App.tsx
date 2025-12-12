@@ -10,7 +10,7 @@ function App() {
   // Settings State
   const [language, setLanguage] = useState<'anglo' | 'italian'>('italian');
   const [selectedIntervals, setSelectedIntervals] = useState<number[]>(
-    INTERVALS.map(i => i.semitones) // Default all
+    INTERVALS.filter(i => i.type === 'Major' || i.type === 'Perfect').map(i => i.semitones)
   );
   const [pianoMode, setPianoMode] = useState(false);
   const [highlightFirstNote, setHighlightFirstNote] = useState(true);
