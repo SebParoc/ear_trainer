@@ -38,6 +38,20 @@ const Quiz: React.FC<QuizProps> = ({
 
     const [hasInteracted, setHasInteracted] = useState(false);
 
+    const playSequence = useCallback((startNote: Note, interval: Interval, direction: 'Ascending' | 'Descending') => {
+        if (isPlaying) return;
+
+        setIsPlaying(true);
+        const semitones = direction === 'Ascending' ? interval.semitones : -interval.semitones;
+        const endNote = getIntervalNote(startNote, semitones);
+        playInterval(startNote, endNote);
+
+        // Block playback for 2 seconds (0.8s delay + note duration)
+        setTimeout(() => {
+            setIsPlaying(false);
+        }, 2000);
+    }, [isPlaying]);
+
     const generateQuestion = useCallback(() => {
         const availableIntervals = INTERVALS.filter(i => selectedIntervals.includes(i.semitones));
         if (availableIntervals.length === 0) return;
@@ -103,21 +117,7 @@ const Quiz: React.FC<QuizProps> = ({
         if (hasInteracted) {
             playSequence(startNote, interval, direction);
         }
-    }, [selectedIntervals, selectedStartNote, intervalDirection, hasInteracted, selectedOctaves]);
-
-    const playSequence = (startNote: Note, interval: Interval, direction: 'Ascending' | 'Descending') => {
-        if (isPlaying) return;
-
-        setIsPlaying(true);
-        const semitones = direction === 'Ascending' ? interval.semitones : -interval.semitones;
-        const endNote = getIntervalNote(startNote, semitones);
-        playInterval(startNote, endNote);
-
-        // Block playback for 2 seconds (0.8s delay + note duration)
-        setTimeout(() => {
-            setIsPlaying(false);
-        }, 2000);
-    };
+    }, [selectedIntervals, selectedStartNote, intervalDirection, hasInteracted, selectedOctaves, playSequence]);
 
     useEffect(() => {
         if (!currentStartNote && selectedIntervals.length > 0) {
@@ -125,7 +125,7 @@ const Quiz: React.FC<QuizProps> = ({
         }
     }, [generateQuestion, currentStartNote, selectedIntervals.length]);
 
-    const handlePlay = async () => {
+    const handlePlay = useCallback(async () => {
         if (!hasInteracted) {
             setHasInteracted(true);
             // Initialize audio context on first click
@@ -135,7 +135,7 @@ const Quiz: React.FC<QuizProps> = ({
         if (currentStartNote && currentInterval && !isPlaying) {
             playSequence(currentStartNote, currentInterval, currentDirection);
         }
-    };
+    }, [hasInteracted, currentStartNote, currentInterval, isPlaying, playSequence, currentDirection]);
 
     // Header Portal Effect
     useEffect(() => {

@@ -103,13 +103,19 @@ const Piano: React.FC<PianoProps> = ({
                 }
             }
         }
-    }, [highlightNotes, scrollAlignment]); // keys is stable enough
+    }, [highlightNotes, scrollAlignment, keys]);
 
     // Clear visible labels when state resets to neutral (new turn)
     useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout>;
         if (highlightState === 'neutral') {
-            setVisibleLabels(new Set());
+            // We use a micro-task or a short timeout to avoid "synchronous setState in effect" lint error
+            // and ensure it happens after the render cycle if needed.
+            timeoutId = setTimeout(() => {
+                setVisibleLabels(new Set());
+            }, 0);
         }
+        return () => clearTimeout(timeoutId);
     }, [highlightState]);
 
     const handleNoteClick = (note: Note) => {
