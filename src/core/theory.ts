@@ -96,7 +96,7 @@ export const INTERVALS: Interval[] = [
         shortName: "m6",
         type: 'Minor',
         difficulty: 'intermediate',
-        hint: { anglo: "The Entertainer", italian: "The Entertainer" },
+        hint: { anglo: "Love Story theme", italian: "Tema di Love Story" },
     },
     {
         semitones: 9,
@@ -112,7 +112,7 @@ export const INTERVALS: Interval[] = [
         shortName: "m7",
         type: 'Minor',
         difficulty: 'advanced',
-        hint: { anglo: "Somewhere (West Side Story)", italian: "Somewhere (West Side Story)" },
+        hint: { anglo: "Star Trek theme", italian: "Tema di Star Trek" },
     },
     {
         semitones: 11,
@@ -120,7 +120,7 @@ export const INTERVALS: Interval[] = [
         shortName: "M7",
         type: 'Major',
         difficulty: 'advanced',
-        hint: { anglo: "Take On Me", italian: "Take On Me" },
+        hint: { anglo: "Somewhere (West Side Story)", italian: "Somewhere (West Side Story)" },
     },
     {
         semitones: 12,
