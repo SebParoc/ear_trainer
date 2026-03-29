@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Settings as SettingsIcon, ArrowLeft } from 'lucide-react';
+import { Settings as SettingsIcon, ArrowLeft, BookOpen } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
     showSettings: boolean;
+    showGuide: boolean;
     onToggleSettings: () => void;
+    onToggleGuide: () => void;
     pianoMode: boolean;
     headerCenter?: React.ReactNode;
 }
@@ -12,7 +14,9 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({
     children,
     showSettings,
+    showGuide,
     onToggleSettings,
+    onToggleGuide,
     pianoMode,
     headerCenter
 }) => {
@@ -59,17 +63,28 @@ const Layout: React.FC<LayoutProps> = ({
                     {headerCenter}
                 </div>
 
-                <button
-                    onClick={onToggleSettings}
-                    className={`relative rounded-xl transition-all duration-300 group overflow-hidden will-change-transform ${showSettings
-                        ? 'bg-gradient-to-br from-soft-blush to-dust-grey text-charcoal-blue shadow-lg scale-105'
-                        : 'bg-cool-steel/15 text-soft-blush hover:bg-cool-steel/25 border border-cool-steel/20 hover:border-cool-steel/40 hover:scale-105'
-                        } ${pianoMode ? 'p-2' : 'p-3'}`}
-                >
-                    <div className={`transition-transform duration-500 ease-out ${showSettings ? 'rotate-180' : 'rotate-0'}`}>
-                        {showSettings ? <ArrowLeft className="w-5 h-5 relative z-10" /> : <SettingsIcon className="w-5 h-5 relative z-10" />}
-                    </div>
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={onToggleGuide}
+                        className={`relative rounded-xl transition-all duration-300 group overflow-hidden will-change-transform ${showGuide
+                            ? 'bg-gradient-to-br from-soft-blush to-dust-grey text-charcoal-blue shadow-lg scale-105'
+                            : 'bg-cool-steel/15 text-soft-blush hover:bg-cool-steel/25 border border-cool-steel/20 hover:border-cool-steel/40 hover:scale-105'
+                            } ${pianoMode ? 'p-2' : 'p-3'}`}
+                    >
+                        {showGuide ? <ArrowLeft className="w-5 h-5 relative z-10" /> : <BookOpen className="w-5 h-5 relative z-10" />}
+                    </button>
+                    <button
+                        onClick={onToggleSettings}
+                        className={`relative rounded-xl transition-all duration-300 group overflow-hidden will-change-transform ${showSettings
+                            ? 'bg-gradient-to-br from-soft-blush to-dust-grey text-charcoal-blue shadow-lg scale-105'
+                            : 'bg-cool-steel/15 text-soft-blush hover:bg-cool-steel/25 border border-cool-steel/20 hover:border-cool-steel/40 hover:scale-105'
+                            } ${pianoMode ? 'p-2' : 'p-3'}`}
+                    >
+                        <div className={`transition-transform duration-500 ease-out ${showSettings ? 'rotate-180' : 'rotate-0'}`}>
+                            {showSettings ? <ArrowLeft className="w-5 h-5 relative z-10" /> : <SettingsIcon className="w-5 h-5 relative z-10" />}
+                        </div>
+                    </button>
+                </div>
             </header>
 
             {/* Main Content */}
