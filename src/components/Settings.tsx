@@ -1,6 +1,6 @@
 import React from 'react';
 import { INTERVALS, NOTES, type NoteName, getNoteName, getIntervalColor } from '../core/theory';
-import { Check, Music, ArrowUpRight, Languages, Volume2, Lightbulb } from 'lucide-react';
+import { Check, Music, ArrowUpRight, Languages, Lightbulb } from 'lucide-react';
 
 interface SettingsProps {
     language: 'anglo' | 'italian';
