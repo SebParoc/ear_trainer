@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Layout from './components/Layout';
 import Settings from './components/Settings';
 import Quiz from './components/Quiz';
-import { INTERVALS, type NoteName } from './core/theory';
+import { INTERVALS, type NoteName, type IntervalQuality } from './core/theory';
 
 function App() {
   const [showSettings, setShowSettings] = useState(false);

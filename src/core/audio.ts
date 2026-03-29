@@ -56,13 +56,19 @@ export function playInterval(note1: Note, note2: Note) {
     const n2 = getNoteString(note2);
 
     sampler.triggerAttackRelease(n1, "2n", now);
-    sampler.triggerAttackRelease(n2, "2n", now + 0.8); // Slower pace for piano
+    sampler.triggerAttackRelease(n2, "2n", now + 0.8);
+}
+
+/** Play both notes simultaneously (harmonic interval) */
+export function playHarmonicInterval(note1: Note, note2: Note) {
+    const now = Tone.now();
+    sampler.triggerAttackRelease(getNoteString(note1), "2n", now);
+    sampler.triggerAttackRelease(getNoteString(note2), "2n", now);
 }
 
 let duckPlayer: Tone.Player | null = null;
 
 export function playDuckSound() {
-    // Ensure context is running, but don't block
     if (Tone.context.state !== 'running') {
         initAudio().catch(console.error);
     }
@@ -80,7 +86,6 @@ export function playDuckSound() {
 let happyDuckPlayer: Tone.Player | null = null;
 
 export function playHappyDuckSound() {
-    // Ensure context is running, but don't block
     if (Tone.context.state !== 'running') {
         initAudio().catch(console.error);
     }
@@ -102,6 +107,23 @@ export function playSuccessSound() {
 
     const synth = new Tone.PolySynth(Tone.Synth).toDestination();
     const now = Tone.now();
-    // Play a pleasant major triad arpeggio
     synth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
+}
+
+/** Play a celebratory arpeggio for streak milestones */
+export function playStreakSound() {
+    if (Tone.context.state !== 'running') {
+        initAudio().catch(console.error);
+    }
+
+    const synth = new Tone.PolySynth(Tone.Synth, {
+        envelope: { attack: 0.01, decay: 0.3, sustain: 0.2, release: 0.8 }
+    }).toDestination();
+    const now = Tone.now();
+    // Ascending major arpeggio with sparkle
+    synth.triggerAttackRelease("C5", "16n", now);
+    synth.triggerAttackRelease("E5", "16n", now + 0.08);
+    synth.triggerAttackRelease("G5", "16n", now + 0.16);
+    synth.triggerAttackRelease("C6", "8n", now + 0.24);
+    synth.triggerAttackRelease("E6", "8n", now + 0.32);
 }
