@@ -1,6 +1,6 @@
 import React from 'react';
-import { INTERVALS, NOTES, type NoteName, getNoteName } from '../core/theory';
-import { Check, Music, ArrowUpRight, Languages } from 'lucide-react';
+import { INTERVALS, NOTES, type NoteName, getNoteName, getIntervalColor } from '../core/theory';
+import { Check, Music, ArrowUpRight, Languages, Volume2, Lightbulb } from 'lucide-react';
 
 interface SettingsProps {
     language: 'anglo' | 'italian';
@@ -59,20 +59,18 @@ const Settings: React.FC<SettingsProps> = ({
         }
     };
 
-    const toggleCategory = (type: 'Major' | 'Minor' | 'Diminished') => {
+    const toggleCategory = (type: 'Major' | 'Minor' | 'Augmented') => {
         const intervalsToToggle = INTERVALS.filter(i => {
             if (type === 'Major') return i.type === 'Major' || i.type === 'Perfect';
-            return i.type === type;
+            if (type === 'Minor') return i.type === 'Minor';
+            return i.type === 'Augmented';
         }).map(i => i.semitones);
 
-        // Check if all are already selected
         const allSelected = intervalsToToggle.every(i => selectedIntervals.includes(i));
 
         if (allSelected) {
-            // Deselect all
             setSelectedIntervals(selectedIntervals.filter(i => !intervalsToToggle.includes(i)));
         } else {
-            // Select all (merge with existing)
             const newSelection = new Set([...selectedIntervals, ...intervalsToToggle]);
             setSelectedIntervals(Array.from(newSelection).sort((a, b) => a - b));
         }
@@ -86,145 +84,129 @@ const Settings: React.FC<SettingsProps> = ({
         }
     };
 
-    const isCategorySelected = (type: 'Major' | 'Minor' | 'Diminished') => {
+    const isCategorySelected = (type: 'Major' | 'Minor' | 'Augmented') => {
         const categoryIntervals = INTERVALS.filter(i => {
             if (type === 'Major') return i.type === 'Major' || i.type === 'Perfect';
-            return i.type === type;
+            if (type === 'Minor') return i.type === 'Minor';
+            return i.type === 'Augmented';
         }).map(i => i.semitones);
         return categoryIntervals.every(i => selectedIntervals.includes(i));
     };
 
+    const SectionCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+        <div className={`bg-gradient-to-br from-charcoal-blue/50 to-ink-black/70 backdrop-blur-xl rounded-2xl p-6 mb-4 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.4)] border border-cool-steel/15 ${className}`}>
+            {children}
+        </div>
+    );
+
+    const SectionHeader = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
+        <div className="flex items-center gap-2.5 mb-5">
+            <div className="p-1.5 rounded-lg bg-cool-steel/15">
+                {icon}
+            </div>
+            <h3 className="text-xs font-bold text-cool-steel/80 uppercase tracking-[0.15em]">{label}</h3>
+        </div>
+    );
+
+    const Toggle = ({ enabled, onChange, label, description }: { enabled: boolean; onChange: () => void; label: string; description: string }) => (
+        <div
+            className="flex items-center justify-between cursor-pointer p-4 rounded-xl bg-ink-black/20 hover:bg-ink-black/35 transition-all duration-200 border border-cool-steel/8"
+            onClick={onChange}
+        >
+            <div className="flex-1">
+                <div className="font-semibold text-base text-soft-blush mb-0.5">{label}</div>
+                <div className="text-sm text-slate-grey/70">{description}</div>
+            </div>
+            <div className={`relative w-14 h-8 rounded-full transition-all duration-300 ${enabled ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_15px_rgba(156,222,159,0.3)]' : 'bg-rosy-granite/40'}`}>
+                <div className={`absolute top-1 left-1 w-6 h-6 bg-soft-blush rounded-full transition-all duration-300 shadow-md ${enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+            </div>
+        </div>
+    );
+
     return (
-        <div className="w-full max-w-3xl mx-auto pb-10 px-4 animate-fade-in-up">
-            <div className="mb-10 text-center">
-                <h2 className="text-4xl font-bold text-soft-blush drop-shadow-lg mb-2">
+        <div className="w-full max-w-3xl mx-auto pb-10 px-4 animate-fade-in">
+            <div className="mb-8 text-center">
+                <h2 className="text-3xl font-bold text-soft-blush mb-1.5">
                     Impostazioni
                 </h2>
                 <div className="flex items-center justify-center gap-2">
-                    <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-cool-steel/50" />
-                    <p className="text-slate-grey text-sm">Personalizza il tuo ear training</p>
-                    <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-cool-steel/50" />
+                    <div className="w-10 h-0.5 bg-gradient-to-r from-transparent to-cool-steel/40" />
+                    <p className="text-slate-grey/60 text-sm">Personalizza il tuo ear training</p>
+                    <div className="w-10 h-0.5 bg-gradient-to-l from-transparent to-cool-steel/40" />
                 </div>
             </div>
 
-            {/* Piano Mode Card */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-cool-steel/20">
-                        <Music className="w-5 h-5 text-cool-steel" />
-                    </div>
-                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Visualizzazione</h3>
-                </div>
-
-                <div className="space-y-6">
-                    <div
-                        className="flex items-center justify-between cursor-pointer p-4 rounded-2xl bg-ink-black/20 hover:bg-ink-black/40 transition-all duration-200 border border-cool-steel/10"
-                        onClick={() => {
+            {/* Visualization */}
+            <SectionCard>
+                <SectionHeader icon={<Music className="w-4 h-4 text-cool-steel" />} label="Visualizzazione" />
+                <div className="space-y-3">
+                    <Toggle
+                        enabled={pianoMode}
+                        onChange={() => {
                             const newPianoMode = !pianoMode;
                             setPianoMode(newPianoMode);
-                            // If enabling piano mode, automatically close settings
                             if (newPianoMode) {
                                 setTimeout(() => onClose(), 300);
                             }
                         }}
-                    >
-                        <div className="flex-1">
-                            <div className="font-semibold text-lg text-soft-blush mb-1">Pianoforte Interattivo</div>
-                            <div className="text-sm text-slate-grey">Suona la risposta direttamente sulla tastiera</div>
-                        </div>
-                        <div className={`relative w-16 h-9 rounded-full transition-all duration-300 ${pianoMode ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_20px_rgba(156,222,159,0.4)]' : 'bg-rosy-granite/50'}`}>
-                            <div className={`absolute top-1 left-1 w-7 h-7 bg-soft-blush rounded-full transition-all duration-300 shadow-lg ${pianoMode ? 'translate-x-7' : 'translate-x-0'}`} />
-                        </div>
-                    </div>
-
-                    <div
-                        className="flex items-center justify-between cursor-pointer p-4 rounded-2xl bg-ink-black/20 hover:bg-ink-black/40 transition-all duration-200 border border-cool-steel/10"
-                        onClick={() => setDuckSoundEnabled(!duckSoundEnabled)}
-                    >
-                        <div className="flex-1">
-                            <div className="font-semibold text-lg text-soft-blush mb-1">Ducky Idol</div>
-                            <div className="text-sm text-slate-grey">Abilita suoni di papera e feedback visivo</div>
-                        </div>
-                        <div className={`relative w-16 h-9 rounded-full transition-all duration-300 ${duckSoundEnabled ? 'bg-gradient-to-r from-celadon to-celadon/80 shadow-[0_0_20px_rgba(156,222,159,0.4)]' : 'bg-rosy-granite/50'}`}>
-                            <div className={`absolute top-1 left-1 w-7 h-7 bg-soft-blush rounded-full transition-all duration-300 shadow-lg ${duckSoundEnabled ? 'translate-x-7' : 'translate-x-0'}`} />
-                        </div>
-                    </div>
+                        label="Pianoforte Interattivo"
+                        description="Suona la risposta direttamente sulla tastiera"
+                    />
+                    <Toggle
+                        enabled={duckSoundEnabled}
+                        onChange={() => setDuckSoundEnabled(!duckSoundEnabled)}
+                        label="Ducky Idol"
+                        description="Abilita suoni di papera e feedback visivo"
+                    />
                 </div>
-            </div>
+            </SectionCard>
 
-            {/* Language Selection Card */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-soft-blush/20">
-                        <Languages className="w-5 h-5 text-soft-blush" />
-                    </div>
-                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Sistema di Notazione</h3>
-                </div>
-
+            {/* Language */}
+            <SectionCard>
+                <SectionHeader icon={<Languages className="w-4 h-4 text-soft-blush/70" />} label="Sistema di Notazione" />
                 <div className="grid grid-cols-2 gap-3">
-                    <button
-                        onClick={() => setLanguage('anglo')}
-                        className={`
-                            py-4 rounded-xl font-medium text-base transition-all duration-200
-                            ${language === 'anglo'
-                                ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
-                                : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
-                        `}
-                    >
-                        <div className="font-bold mb-1">Anglo-Americano</div>
-                        <div className="text-xs opacity-70">C, D, E, F, G, A, B</div>
-                    </button>
-                    <button
-                        onClick={() => setLanguage('italian')}
-                        className={`
-                            py-4 rounded-xl font-medium text-base transition-all duration-200
-                            ${language === 'italian'
-                                ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
-                                : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
-                        `}
-                    >
-                        <div className="font-bold mb-1">Italiano</div>
-                        <div className="text-xs opacity-70">Do, Re, Mi, Fa, Sol, La, Si</div>
-                    </button>
+                    {[
+                        { key: 'anglo' as const, label: 'Anglo-Americano', sub: 'C, D, E, F, G, A, B' },
+                        { key: 'italian' as const, label: 'Italiano', sub: 'Do, Re, Mi, Fa, Sol, La, Si' },
+                    ].map(({ key, label, sub }) => (
+                        <button
+                            key={key}
+                            onClick={() => setLanguage(key)}
+                            className={`py-4 rounded-xl font-medium text-base transition-all duration-200
+                                ${language === key
+                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-[1.02] font-bold'
+                                    : 'bg-charcoal-blue/60 text-soft-blush hover:bg-cool-steel/15 border border-cool-steel/15'}`}
+                        >
+                            <div className="font-bold mb-0.5">{label}</div>
+                            <div className="text-xs opacity-60">{sub}</div>
+                        </button>
+                    ))}
                 </div>
-            </div>
+            </SectionCard>
 
-            {/* Start Note Card */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-soft-blush/20">
-                        <Music className="w-5 h-5 text-soft-blush" />
-                    </div>
-                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Nota di Partenza</h3>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
+            {/* Start Note */}
+            <SectionCard>
+                <SectionHeader icon={<Lightbulb className="w-4 h-4 text-soft-blush/70" />} label="Nota di Partenza" />
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                     {(['Random', ...NOTES] as const).map((note) => (
                         <button
                             key={note}
                             onClick={() => setSelectedStartNote(note)}
-                            className={`
-                py-2 rounded-xl font-medium text-sm transition-all duration-200
-                ${selectedStartNote === note
-                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
-                                    : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
-              `}
+                            className={`py-2.5 rounded-xl font-medium text-sm transition-all duration-200
+                                ${selectedStartNote === note
+                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-[1.03] font-bold'
+                                    : 'bg-charcoal-blue/60 text-soft-blush hover:bg-cool-steel/15 border border-cool-steel/15'}
+                                ${note === 'Random' ? 'col-span-2 sm:col-span-1' : ''}`}
                         >
                             {note === 'Random' ? 'Random' : getNoteName(note, language)}
                         </button>
                     ))}
                 </div>
-            </div>
+            </SectionCard>
 
-            {/* Octave Selection Card */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-soft-blush/20">
-                        <Music className="w-5 h-5 text-soft-blush" />
-                    </div>
-                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Ottave Attive</h3>
-                </div>
-
+            {/* Octaves */}
+            <SectionCard>
+                <SectionHeader icon={<Music className="w-4 h-4 text-soft-blush/70" />} label="Ottave Attive" />
                 <div className="flex gap-3 justify-center">
                     {[2, 3, 4, 5].map((octave) => {
                         const isSelected = selectedOctaves.includes(octave);
@@ -232,130 +214,107 @@ const Settings: React.FC<SettingsProps> = ({
                             <button
                                 key={octave}
                                 onClick={() => toggleOctave(octave)}
-                                className={`
-                                    w-16 h-16 rounded-2xl font-bold text-xl transition-all duration-200 flex items-center justify-center
+                                className={`w-14 h-14 rounded-xl font-bold text-xl transition-all duration-200 flex items-center justify-center
                                     ${isSelected
-                                        ? 'bg-celadon text-charcoal-blue shadow-lg scale-105'
-                                        : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
-                                `}
+                                        ? 'bg-celadon text-charcoal-blue shadow-lg scale-[1.05]'
+                                        : 'bg-charcoal-blue/60 text-soft-blush hover:bg-cool-steel/15 border border-cool-steel/15'}`}
                             >
                                 {octave}
                             </button>
                         );
                     })}
                 </div>
-            </div>
+            </SectionCard>
 
-            {/* Interval Direction */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 mb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-celadon/20">
-                        <ArrowUpRight className="w-5 h-5 text-celadon" />
-                    </div>
-                    <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Direzione Intervalli</h3>
-                </div>
+            {/* Direction */}
+            <SectionCard>
+                <SectionHeader icon={<ArrowUpRight className="w-4 h-4 text-celadon/70" />} label="Direzione Intervalli" />
                 <div className="grid grid-cols-3 gap-2">
-                    {(['Ascending', 'Descending', 'Both'] as const).map((dir) => (
+                    {([
+                        { key: 'Ascending' as const, label: 'Ascendenti', icon: '\u2191' },
+                        { key: 'Descending' as const, label: 'Discendenti', icon: '\u2193' },
+                        { key: 'Both' as const, label: 'Entrambi', icon: '\u2195' },
+                    ]).map(({ key, label, icon }) => (
                         <button
-                            key={dir}
-                            onClick={() => setIntervalDirection(dir)}
-                            className={`
-                py-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200
-                ${intervalDirection === dir
-                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-105 font-bold'
-                                    : 'bg-charcoal-blue text-soft-blush hover:bg-cool-steel/20 border border-cool-steel/20'}
-              `}
+                            key={key}
+                            onClick={() => setIntervalDirection(key)}
+                            className={`py-3 rounded-xl font-medium text-sm transition-all duration-200
+                                ${intervalDirection === key
+                                    ? 'bg-celadon text-charcoal-blue shadow-lg scale-[1.02] font-bold'
+                                    : 'bg-charcoal-blue/60 text-soft-blush hover:bg-cool-steel/15 border border-cool-steel/15'}`}
                         >
-                            {dir === 'Ascending' ? 'Ascendenti' : dir === 'Descending' ? 'Discendenti' : 'Entrambi'}
+                            <span className="text-lg mr-1">{icon}</span> {label}
                         </button>
                     ))}
                 </div>
-            </div>
+            </SectionCard>
 
-            {/* Intervals Card */}
-            <div className="bg-gradient-to-br from-charcoal-blue/60 to-ink-black/80 backdrop-blur-xl rounded-3xl p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-cool-steel/30">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-celadon/20">
-                            <Check className="w-5 h-5 text-celadon" />
-                        </div>
-                        <h3 className="text-sm font-bold text-cool-steel uppercase tracking-widest">Intervalli</h3>
-                    </div>
+            {/* Intervals */}
+            <SectionCard>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-5">
+                    <SectionHeader icon={<Check className="w-4 h-4 text-celadon/70" />} label="Intervalli" />
                     <button
                         onClick={toggleAll}
-                        className="relative text-xs font-bold text-celadon hover:text-soft-blush uppercase tracking-wider px-4 py-2 rounded-xl bg-celadon/10 hover:bg-celadon/20 transition-all duration-200 border border-celadon/30 hover:border-celadon/50 group overflow-hidden"
+                        className="text-xs font-bold text-celadon hover:text-soft-blush uppercase tracking-wider px-3 py-1.5 rounded-lg bg-celadon/10 hover:bg-celadon/20 transition-all duration-200 border border-celadon/20 hover:border-celadon/40"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-celadon/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="relative z-10">
-                            {selectedIntervals.length === INTERVALS.length ? 'Deseleziona' : 'Tutti'}
-                        </span>
+                        {selectedIntervals.length === INTERVALS.length ? 'Deseleziona' : 'Tutti'}
                     </button>
                 </div>
 
                 {/* Category Toggles */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
-                    <button
-                        onClick={() => toggleCategory('Major')}
-                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium leading-tight
-                            ${isCategorySelected('Major')
-                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
-                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
-                            }`}
-                    >
-                        Maggiori/<br />Giusti
-                    </button>
-                    <button
-                        onClick={() => toggleCategory('Minor')}
-                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
-                            ${isCategorySelected('Minor')
-                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
-                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
-                            }`}
-                    >
-                        Minori
-                    </button>
-                    <button
-                        onClick={() => toggleCategory('Diminished')}
-                        className={`py-3 px-2 sm:px-4 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium
-                            ${isCategorySelected('Diminished')
-                                ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
-                                : 'bg-ink-black/20 hover:bg-ink-black/40 border-cool-steel/20 hover:border-cool-steel/40 text-cool-steel hover:text-soft-blush'
-                            }`}
-                    >
-                        Diminuiti
-                    </button>
+                <div className="grid grid-cols-3 gap-2 mb-5">
+                    {[
+                        { key: 'Major' as const, label: 'Maggiori/\nGiusti' },
+                        { key: 'Minor' as const, label: 'Minori' },
+                        { key: 'Augmented' as const, label: 'Tritono' },
+                    ].map(({ key, label }) => (
+                        <button
+                            key={key}
+                            onClick={() => toggleCategory(key)}
+                            className={`py-3 px-2 rounded-xl border transition-all duration-200 text-xs sm:text-sm font-medium leading-tight whitespace-pre-line
+                                ${isCategorySelected(key)
+                                    ? 'bg-celadon text-charcoal-blue border-celadon shadow-lg font-bold'
+                                    : 'bg-ink-black/20 hover:bg-ink-black/35 border-cool-steel/15 hover:border-cool-steel/30 text-cool-steel hover:text-soft-blush'}`}
+                        >
+                            {label}
+                        </button>
+                    ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                     {INTERVALS.map(interval => {
                         const isSelected = selectedIntervals.includes(interval.semitones);
+                        const qualityColor = getIntervalColor(interval.type);
                         return (
                             <button
                                 key={interval.semitones}
                                 onClick={() => toggleInterval(interval.semitones)}
-                                className={`
-                  relative w-full flex items-center justify-between p-5 rounded-2xl transition-all duration-200 border overflow-hidden group
-                  ${isSelected
-                                        ? 'bg-gradient-to-r from-cool-steel/30 to-bitter-chocolate/20 border-cool-steel/50 shadow-[0_4px_20px_rgba(119,160,169,0.2)]'
-                                        : 'bg-ink-black/20 border-rosy-granite/20 hover:bg-ink-black/40 hover:border-rosy-granite/40'}
-                `}
+                                className={`relative w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 border overflow-hidden group
+                                    ${isSelected
+                                        ? 'bg-gradient-to-r from-cool-steel/25 to-bitter-chocolate/15 border-cool-steel/40 shadow-[0_4px_20px_rgba(119,160,169,0.15)]'
+                                        : 'bg-ink-black/15 border-cool-steel/8 hover:bg-ink-black/30 hover:border-cool-steel/20'}`}
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-soft-blush/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {/* Quality color accent */}
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl transition-opacity duration-200"
+                                    style={{ backgroundColor: qualityColor, opacity: isSelected ? 0.8 : 0.3 }}
+                                />
 
-                                <span className={`font-semibold text-base relative z-10 transition-all ${isSelected ? 'text-soft-blush' : 'text-slate-grey group-hover:text-soft-blush/80'}`}>
-                                    {interval.name[language]}
-                                </span>
-                                <div className={`
-                  relative z-10 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200
-                  ${isSelected ? 'bg-cool-steel border-cool-steel scale-110 shadow-[0_0_15px_rgba(119,160,169,0.5)]' : 'border-rosy-granite group-hover:border-cool-steel/50'}
-                `}>
-                                    {isSelected && <Check className="w-5 h-5 text-charcoal-blue" />}
+                                <div className="flex items-center gap-3 ml-2">
+                                    <span className={`font-semibold text-base transition-all ${isSelected ? 'text-soft-blush' : 'text-slate-grey group-hover:text-soft-blush/80'}`}>
+                                        {interval.name[language]}
+                                    </span>
+                                    <span className="text-[10px] text-slate-grey/40 font-mono">{interval.shortName}</span>
+                                </div>
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                                    ${isSelected ? 'bg-cool-steel border-cool-steel scale-110 shadow-[0_0_10px_rgba(119,160,169,0.4)]' : 'border-rosy-granite/40 group-hover:border-cool-steel/40'}`}>
+                                    {isSelected && <Check className="w-4 h-4 text-charcoal-blue" />}
                                 </div>
                             </button>
                         );
                     })}
                 </div>
-            </div>
+            </SectionCard>
         </div>
     );
 };
